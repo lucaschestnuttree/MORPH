@@ -1,0 +1,14 @@
+name: pymut-env
+channels:
+  - conda-forge
+  - bioconda
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - biopython
+  - numpy[version='<2']
+  - pip
+  - python=3.10
+  - openmm
+  - conda-forge::pandas
+prefix: /pasteur/appa/homes/lchataig/miniconda3/envs/pymut-env

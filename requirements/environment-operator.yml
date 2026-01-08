@@ -1,0 +1,24 @@
+name: operator
+channels:
+  - conda-forge
+  - bioconda
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - pip
+  - python=3.10
+  - requests
+  - polars
+  - pandas
+  - conda-forge::pyarrow
+  - conda-forge::matplotlib
+  - conda-forge::plotnine
+  - openpyxl
+  - yaml
+  - pyyaml
+  - ruamel.yaml
+  - conda-forge::seaborn
+  - conda-forge::adjusttext
+  - bioconda::biolib
+  - conda-forge::scikit-learn
+prefix: /pasteur/appa/homes/lchataig/miniconda3/envs/operator

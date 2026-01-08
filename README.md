@@ -6,7 +6,13 @@
 │   ├── 1-raw            <- The original, immutable data dump.
 │   └── 2-processed      <- exploitable databases and predictions
 │
-├── requirements.txt   <- The requirements file for reproducing the analysis environment
+├── requirements
+│   ├── requirements-operator.txt (conda environment for general python): Python 3.10.18
+│   ├── requirements-hail.txt (conda environment to run hail): Python 3.10.18
+│   ├── requirements-pymut.txt (conda environment to run pymut): Python 3.10.19
+│   ├── environment-operator.yml
+│   ├── environment-hail.yml
+│   └── environment-pymut.yml
 │                       
 ├── src                <- Source code for use in this project.
     ├── 1-data_generation Data downloads, cleaning, harmonization, filtering operations

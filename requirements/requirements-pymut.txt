@@ -1,0 +1,9 @@
+biopython @ file:///home/conda/feedstock_root/build_artifacts/biopython_1761734585537/work
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1707225380409/work/dist/numpy-1.26.4-cp310-cp310-linux_x86_64.whl#sha256=51131fd8fc130cd168aecaf1bc0ea85f92e8ffebf211772ceb16ac2e7f10d7ca
+OpenMM==8.4.0
+pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1764614464206/work
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dateutil_1751104122/work
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1742920838005/work
+scipy @ file:///home/conda/feedstock_root/build_artifacts/scipy-split_1739790642651/work/dist/scipy-1.15.2-cp310-cp310-linux_x86_64.whl#sha256=9e52bad6c3294d1a5b04a13632118ca2157130603c6c018c2d710162b223b27e
+six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
+tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1765719872007/work
