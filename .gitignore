@@ -1,0 +1,10 @@
+
+# exclude data and logs from source control by default
+
+#data
+/data/*
+
+#logs
+/log/*
+
+
