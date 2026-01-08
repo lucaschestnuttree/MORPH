@@ -49,7 +49,7 @@ Available AlphaMissense data from Cheng et al https://www.science.org/doi/10.112
 - merged records tar and gz in batches
 
 ### pdb
--a test pdb
+- a test pdb
 
 ### stuff
 - a collection of very seriously thought out items
