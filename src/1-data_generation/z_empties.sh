@@ -4,7 +4,7 @@ set -euo pipefail
 # ============================================================
 # Paths
 # ============================================================
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
 
 IDS="${BASE_PATH}/data/2-processed/missing_amissenseXgnomAD.txt"
 GNOMAD_DIR="${BASE_PATH}/data/2-processed/missense_jul/gnomAD_AF"

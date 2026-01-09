@@ -5,8 +5,8 @@
 # -------------------------
 
 #SBATCH --job-name=aaa_GnomAD_parse_array
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/gnomad/%x_%A_%a.out
-#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/gnomad/%x_%A_%a.err
+#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/gnomad/%x_%A_%a.out
+#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/gnomad/%x_%A_%a.err
 
 #SBATCH --qos=fast
 #SBATCH --time=0:20:00
@@ -20,7 +20,7 @@
 # -------------------------
 
 # Base project path
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
 
 # Directories and files
 TSV_DIR="${BASE_PATH}/data/2-processed/missense_jul/hg38"

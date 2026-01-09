@@ -5,8 +5,8 @@
 # -------------------------
 
 #SBATCH --job-name=missenseXgnomAD
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/gnomXmiss/%x_%A_%a.out
-#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/gnomXmiss/%x_%A_%a.err
+#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/gnomXmiss/%x_%A_%a.out
+#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/gnomXmiss/%x_%A_%a.err
 
 #SBATCH --qos=fast
 #SBATCH --time=2:00:00               
@@ -19,7 +19,7 @@
 # -------------------------
 
 # Paths and variables
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
 
 GNOM_DIR="${BASE_PATH}/data/2-processed/missense_jul/gnomAD_AF"
 OUTPUT_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD"

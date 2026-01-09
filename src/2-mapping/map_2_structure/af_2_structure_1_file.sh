@@ -5,8 +5,8 @@
 # -------------------------
 
 #SBATCH --job-name=gnomad_af_2_structure_1file
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/%x_%A_%a.out    
-#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/%x_%A_%a.err     
+#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/%x_%A_%a.out
+#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/%x_%A_%a.err
 
 #SBATCH --qos=fast
 #SBATCH --time=0:20:00               
@@ -20,7 +20,7 @@
 # -------------------------
 
 # Define paths
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
 
 # Define directories and paths
 INPUT_FILE="${BASE_PATH}/data/2-processed/amissenseXgnomAD/P10635_amissenseXgnomAD.tsv"
