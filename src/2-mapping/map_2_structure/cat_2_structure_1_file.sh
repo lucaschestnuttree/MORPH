@@ -5,8 +5,8 @@
 # -------------------------
 
 #SBATCH --job-name=gnomad_ancestry_2_structure_1file
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view/log/%x_%A_%a.out    
-#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view/log/%x_%A_%a.err     
+#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/%x_%A_%a.out    
+#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/%x_%A_%a.err     
 
 #SBATCH --qos=fast
 #SBATCH --time=1:00:00               
