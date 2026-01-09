@@ -4,7 +4,7 @@ set -euo pipefail
 # =========================
 # CONFIG
 # =========================
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 IN_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD"
 OUT_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD_tars_gz"
 

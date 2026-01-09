@@ -5,7 +5,7 @@
 # -------------------------
 
 # Define paths
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 SCRIPT_PATH="${BASE_PATH}/src/1-data_generation/1-fetch_data.py"
 

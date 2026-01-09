@@ -20,7 +20,7 @@
 # -------------------------
 
 # Base project path
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 # Directories and files
 TSV_DIR="${BASE_PATH}/data/2-processed/missense_jul/hg38"

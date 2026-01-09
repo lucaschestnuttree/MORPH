@@ -5,7 +5,7 @@
 # -------------------------
 
 #SBATCH --job-name=gnomad_af_2_structure_1file
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view/log/%x_%A_%a.out    
+#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view/log/%x_%A_%a.out    
 #SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view/log/%x_%A_%a.err     
 
 #SBATCH --qos=fast
@@ -20,14 +20,14 @@
 # -------------------------
 
 # Define paths
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 # Define directories and paths
 INPUT_FILE="${BASE_PATH}/data/2-processed/amissenseXgnomAD/P10635_amissenseXgnomAD.tsv"
 PDB_FILE="${BASE_PATH}/data/2-processed/pdb/P10635.pdb"
 OUTPUT_DIR="${BASE_PATH}/data/2-processed/stuff"
 
-SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/pymut_gnomad_af_2_structure.py"
+SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/pymut_gnomad_af_2_structure2.py"
 
 # -------------------------
 # Environment setup

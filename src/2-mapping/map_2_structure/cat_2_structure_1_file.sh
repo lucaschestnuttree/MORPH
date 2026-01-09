@@ -19,7 +19,7 @@
 # User configuration
 # -------------------------
 # Define paths
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 
 # Define directories and paths

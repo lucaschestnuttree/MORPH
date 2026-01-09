@@ -4,7 +4,7 @@ set -euo pipefail
 # ============================================================
 # Base path
 # ============================================================
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 # ============================================================
 # Inputs

@@ -21,7 +21,7 @@
 
 # Define paths & parameters
 
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 
 GNOM_FILE="${BASE_PATH}/data/2-processed/missense_jul/gnomAD_AF/P15382_gnomAD.tsv"
 OUTPUT_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD"

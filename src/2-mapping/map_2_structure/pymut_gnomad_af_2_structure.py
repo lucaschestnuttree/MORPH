@@ -606,7 +606,7 @@ def write_final_pdb(structure, metadata_lines: List[str], out_pdb: str) -> None:
 
 
 # ============================================================
-# Pipeline (NO OpenMM)
+# Pipeline 
 # ============================================================
 
 def run_pipeline(input_tsv: str, input_pdb: str, output_dir: str) -> str:

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/miss_struct_view"
+BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_struct_view"
 FILE="${BASE_PATH}/data/1-raw/missense_db/AlphaMissense_hg38.tsv"
 
 UNIPROT_ID="Q4G0S4"
