@@ -86,27 +86,27 @@ def color_gnomaf(*args, **kwargs):
     threshold = int(args[0]) if len(args) >= 1 else 0
 
     # Colors
-    cmd.set_color(f"{selection}_bin_0_color", [224, 224, 224])
-    cmd.set_color(f"{selection}_bin_1_color", [192, 192, 192])
-    cmd.set_color(f"{selection}_bin_2_color", [160, 160, 160])
-    cmd.set_color(f"{selection}_bin_3_color", [128, 128, 128])
-    cmd.set_color(f"{selection}_bin_5_color", [255, 51, 51])
-    cmd.set_color(f"{selection}_bin_6_color", [153, 0, 0])
-    cmd.set_color(f"{selection}_bin_7_color", [51, 51, 255])
-    cmd.set_color(f"{selection}_bin_8_color", [153, 51, 255])
-    cmd.set_color(f"{selection}_bin_paleyellow_color", [255, 255, 204])
+    cmd.set_color(f"{selection}_bin_0_color", [224, 224, 224]) # Frequency: [1e-9, 1e-8) # Grey Shades
+    cmd.set_color(f"{selection}_bin_1_color", [192, 192, 192]) # Frequency: [1e-8, 1e-7) # Grey Shades
+    cmd.set_color(f"{selection}_bin_2_color", [160, 160, 160]) # Frequency: [1e-7, 1e-6) # Grey Shades
+    cmd.set_color(f"{selection}_bin_3_color", [128, 128, 128]) # Frequency: [1e-6, 1e-5) # Grey Shades
+    cmd.set_color(f"{selection}_bin_5_color", [255, 51, 51]) # Frequency: [1e-4, 1e-3) # Red
+    cmd.set_color(f"{selection}_bin_6_color", [153, 0, 0]) # Frequency: [1e-3, 1e-2) # Dark Red
+    cmd.set_color(f"{selection}_bin_7_color", [51, 51, 255]) # Frequency: [1e-2, 0.51) # Blue
+    cmd.set_color(f"{selection}_bin_8_color", [153, 51, 255]) # Frequency: [0.51, 1.0]  # Purple
+    cmd.set_color(f"{selection}_bin_paleyellow_color", [255, 255, 204]) # Yellow for absent/0 allele frequency
 
-    cmd.set_color(f"{selection}_light_orange", [255, 204, 153])     # V
-    cmd.set_color(f"{selection}_lighter_orange", [255, 229, 204])   # W
-    cmd.set_color(f"{selection}_lightest_orange", [255, 240, 224])  # X
+    cmd.set_color(f"{selection}_light_orange", [255, 204, 153])     # V (min_residue)
+    cmd.set_color(f"{selection}_lighter_orange", [255, 229, 204])   # W (min_residue2)
+    cmd.set_color(f"{selection}_lightest_orange", [255, 240, 224])  # X (min_residue3)
 
     # Bin window
     if threshold == 1:
-        bin_min, bin_max = (3, 9)
-        cmd.set_color(f"{selection}_bin_4_color", [255, 204, 204])
+        bin_min, bin_max = (3, 9) # bins 4, 5, 6, 7, 8 [1e-5, 1.0] ~20 seq
+        cmd.set_color(f"{selection}_bin_4_color", [255, 204, 204]) # bin 4 [1e-5, 1e-4) ~
     else:
-        bin_min, bin_max = (4, 9)
-        cmd.set_color(f"{selection}_bin_4_color", [96, 96, 96])
+        bin_min, bin_max = (4, 9)  # bins 5, 6, 7, 8  [1e-4, 1.0] ~ 200 seq
+        cmd.set_color(f"{selection}_bin_4_color", [96, 96, 96]) # bin 4  [1e-5, 1e-4) 
 
     # KEEP chain A selections as-is
     cmd.select(f"{selection}_variants",
@@ -183,30 +183,32 @@ def color_gnomcat(*args, **kwargs):
     cmd.set_color(f"{selection}_blueer", [102, 102, 255])
     cmd.set_color(f"{selection}_violeter", [178, 102, 255])
     cmd.set_color(f"{selection}_oranger", [255, 178, 102])
+    cmd.set_color(f"{selection}_yellower", [255, 255, 102])  
 
     cmd.set_color(f"{selection}_redish", [255, 204, 204])
     cmd.set_color(f"{selection}_blueish", [204, 204, 255])
     cmd.set_color(f"{selection}_violetish", [229, 204, 255])
     cmd.set_color(f"{selection}_orangish", [255, 229, 204])
+    cmd.set_color(f"{selection}_yellowish", [255, 255, 204])  
     cmd.set_color(f"{selection}_light_grey", [224, 224, 224])
 
     threshold = int(args[0]) if len(args) >= 1 else 0
     if threshold == 1:
-        bin_min, bin_max = (4, 9)
-        bin_min2, bin_max2 = (4, 6)
+        bin_min, bin_max = (4, 9)  # bins 5, 6, 7 ,8: [1e-4, 1.0] ~10 seq
+        bin_min2, bin_max2 = (4, 6) # bin 5 [1e-4, 1e-3) 
     else:
-        bin_min, bin_max = (5, 9)
-        bin_min2, bin_max2 = (0, 1)
+        bin_min, bin_max = (5, 9) # bins 6, 7, 8: [1e-3, 1.0] ~100 seq
+        bin_min2, bin_max2 = (0, 1) # no bin
 
-    variant_chains = ["V", "W", "X", "Y"]
+    variant_chains = ["V", "W", "X", "Y", "Z"]
     variant_chains = [c for c in variant_chains if cmd.count_atoms(f"({selection}) and chain {c}") > 0]
     if not variant_chains:
         print("No variant chains found with atoms. Nothing to process.")
         return
 
     atom = "CA"
-    colors  = [f"{selection}_reder", f"{selection}_blueer", f"{selection}_violeter", f"{selection}_oranger"]
-    colors2 = [f"{selection}_redish", f"{selection}_blueish", f"{selection}_violetish", f"{selection}_orangish"]
+    colors  = [f"{selection}_yellower", f"{selection}_oranger", f"{selection}_reder", f"{selection}_violeter", f"{selection}_blueer"]
+    colors2 = [f"{selection}_yellowish", f"{selection}_orangish", f"{selection}_redish", f"{selection}_violetish", f"{selection}_blueish"]
 
     used_directions = set()
 
@@ -248,7 +250,7 @@ def color_gnomcat(*args, **kwargs):
 
     # final viz
     cmd.bg_color("white")
-    cmd.hide("everything", f"({selection}) and (chain V or chain W or chain X or chain Y)")
+    cmd.hide("everything", f"({selection}) and (chain V or chain W or chain X or chain Y or chain Z)")
     cmd.set("specular", 0)
     cmd.set("use_shaders", 0)
 

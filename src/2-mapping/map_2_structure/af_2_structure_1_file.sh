@@ -9,7 +9,7 @@
 #SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/%x_%A_%a.err
 
 #SBATCH --qos=fast
-#SBATCH --time=0:20:00               
+#SBATCH --time=0:50:00               
 #SBATCH --ntasks=1            
 #SBATCH --cpus-per-task=1     
 #SBATCH --mem=10G             
@@ -21,13 +21,14 @@
 
 # Define paths
 BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
+UNIPROT_ID="P10635"
 
 # Define directories and paths
-INPUT_FILE="${BASE_PATH}/data/2-processed/amissenseXgnomAD/P10635_amissenseXgnomAD.tsv"
-PDB_FILE="${BASE_PATH}/data/2-processed/pdb/P10635.pdb"
+INPUT_FILE="${BASE_PATH}/data/2-processed/amissenseXgnomAD/${UNIPROT_ID}_amissenseXgnomAD.tsv"
+PDB_FILE="${BASE_PATH}/data/2-processed/pdb/${UNIPROT_ID}.pdb"
 OUTPUT_DIR="${BASE_PATH}/data/2-processed/stuff"
 
-SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/pymut_gnomad_af_2_structure2.py"
+SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/pymut_gnomad_af_2_structure.py"
 
 # -------------------------
 # Environment setup
