@@ -20,11 +20,11 @@
 BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
 UNIPROT_ID="P10635"
 
-INPUT_TSV="${BASE_PATH}/data/2-processed/amissenseXgnomAD/${UNIPROT_ID}_amissenseXgnomAD.tsv"
+INPUT_TSV="${BASE_PATH}/data/2-processed/missense_jul/aa_substitutions/${UNIPROT_ID}_aa_substitutions.tsv"
 INPUT_PDB="${BASE_PATH}/data/2-processed/pdb/${UNIPROT_ID}.pdb"
 OUTPUT_PDB="${BASE_PATH}/data/2-processed/stuff/${UNIPROT_ID}_am_pathogenicity_bfactor.pdb"
 
-SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/your_script.py"
+SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/all_aa_AM_2_structure.py"
 
 # -------------------------
 # Environment setup
