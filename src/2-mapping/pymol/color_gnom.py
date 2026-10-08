@@ -8,7 +8,7 @@ def custom_cba(selection):
     Custom atomic coloring logic scoped to a specific selection.
     Colors atoms by type within the selection without affecting other atoms.
     """
-    atom_colors = {"N": "blue", "O": "red", "S": "orange", "H": "white"}
+    atom_colors = {"N": "blue", "O": "red", "S": "orange", "H": "white", "Fe": "orange",}
     for atom_type, color in atom_colors.items():
         cmd.color(color, f"{selection} and elem {atom_type}")
 
@@ -73,7 +73,7 @@ def resi_clause(mismatch: dict, chain_letter: str):
     resis = sorted(set(resis), key=lambda x: (len(x), x))
     return "+".join(resis) if resis else None
 
-def color_gnomaf(*args, **kwargs):
+def morph_af(*args, **kwargs):
     """
     Colors structures based on gnomAD allele frequency bins.
     threshold=1 extends coloring to a wider range.
@@ -172,43 +172,60 @@ def color_gnomaf(*args, **kwargs):
     custom_cba(f"{selection}_min_residue3")
     cmd.color("brightorange", f"({selection}_maj_residue) and sidechain and elem C")
 
-def color_gnomcat(*args, **kwargs):
+def morph_anc(*args, **kwargs):
     selection = kwargs.get("sel")
     if not selection:
         print("Error: No selection (PDB object) provided. Use sel='your_object'.")
         return
 
     # colors
+    cmd.set_color(f"{selection}_yellower", [255, 255, 102])
     cmd.set_color(f"{selection}_reder", [255, 102, 102])
-    cmd.set_color(f"{selection}_blueer", [102, 102, 255])
-    cmd.set_color(f"{selection}_violeter", [178, 102, 255])
     cmd.set_color(f"{selection}_oranger", [255, 178, 102])
-    cmd.set_color(f"{selection}_yellower", [255, 255, 102])  
+    cmd.set_color(f"{selection}_violeter", [178, 102, 255])
+    cmd.set_color(f"{selection}_blueer", [102, 102, 255])
+    cmd.set_color(f"{selection}_lightskybluer", [102, 178, 255])
+    cmd.set_color(f"{selection}_greener", [102, 204, 102])
 
+    cmd.set_color(f"{selection}_yellowish", [255, 255, 204])
     cmd.set_color(f"{selection}_redish", [255, 204, 204])
-    cmd.set_color(f"{selection}_blueish", [204, 204, 255])
-    cmd.set_color(f"{selection}_violetish", [229, 204, 255])
     cmd.set_color(f"{selection}_orangish", [255, 229, 204])
-    cmd.set_color(f"{selection}_yellowish", [255, 255, 204])  
+    cmd.set_color(f"{selection}_violetish", [229, 204, 255])
+    cmd.set_color(f"{selection}_blueish", [204, 204, 255])
+    cmd.set_color(f"{selection}_lightskyblueish", [204, 229, 255])
+    cmd.set_color(f"{selection}_greenish", [204, 255, 204])
+
     cmd.set_color(f"{selection}_light_grey", [224, 224, 224])
+    cmd.set_color(f"{selection}_cofactor_green", [204, 255, 204])
 
     threshold = int(args[0]) if len(args) >= 1 else 0
     if threshold == 1:
         bin_min, bin_max = (4, 9)  # bins 5, 6, 7 ,8: [1e-4, 1.0] ~10 seq
-        bin_min2, bin_max2 = (4, 6) # bin 5 [1e-4, 1e-3) 
+        bin_min2, bin_max2 = (4, 6) # bin 5 [1e-4, 1e-3)
     else:
         bin_min, bin_max = (5, 9) # bins 6, 7, 8: [1e-3, 1.0] ~100 seq
         bin_min2, bin_max2 = (0, 1) # no bin
 
-    variant_chains = ["V", "W", "X", "Y", "Z"]
-    variant_chains = [c for c in variant_chains if cmd.count_atoms(f"({selection}) and chain {c}") > 0]
+    # Fixed order: each chain always receives the same color.
+    variant_chain_order = ["T", "U", "V", "W", "X", "Y", "Z"]
+    variant_chains = [
+        chain for chain in variant_chain_order
+        if cmd.count_atoms(f"({selection}) and chain {chain}") > 0
+    ]
     if not variant_chains:
         print("No variant chains found with atoms. Nothing to process.")
         return
 
     atom = "CA"
-    colors  = [f"{selection}_yellower", f"{selection}_oranger", f"{selection}_reder", f"{selection}_violeter", f"{selection}_blueer"]
-    colors2 = [f"{selection}_yellowish", f"{selection}_orangish", f"{selection}_redish", f"{selection}_violetish", f"{selection}_blueish"]
+    chain_colors = {
+        "T": (f"{selection}_yellower",      f"{selection}_yellowish"),
+        "U": (f"{selection}_oranger",       f"{selection}_orangish"),
+        "V": (f"{selection}_reder",         f"{selection}_redish"),
+        "W": (f"{selection}_violeter",      f"{selection}_violetish"),
+        "X": (f"{selection}_blueer",        f"{selection}_blueish"),
+        "Y": (f"{selection}_lightskybluer", f"{selection}_lightskyblueish"),
+        "Z": (f"{selection}_greener",       f"{selection}_greenish"),
+    }
 
     used_directions = set()
 
@@ -221,9 +238,10 @@ def color_gnomcat(*args, **kwargs):
                f"({selection}) and chain A and (b > {bin_min} and b < {bin_max})")
     custom_cba(f"{selection}_maj_residue")
 
-    for i, chain in enumerate(variant_chains):
-        color = colors[i % len(colors)]
-        color2 = colors2[i % len(colors2)]
+    # Create all residue selections before variation objects.
+    # This gives a consistent, preferred order in PyMOL's object panel.
+    for chain in variant_chains:
+        color, color2 = chain_colors[chain]
 
         tag = chain  # ← chain-only naming
 
@@ -234,10 +252,6 @@ def color_gnomcat(*args, **kwargs):
         cmd.color(color, tmp_sel)
         cmd.color(color2, f"{tmp_sel} and (b > {bin_min2} and b < {bin_max2})")
 
-        var_obj = f"{selection}_{tag}_variations"
-        cmd.create(var_obj, tmp_sel)
-        apply_unique_translation(var_obj, r=0.5, used_directions=used_directions)
-
         min_sel = f"{selection}_{tag}_min_residue"
         cmd.select(min_sel,
                    f"({selection}) and chain {chain} "
@@ -246,11 +260,39 @@ def color_gnomcat(*args, **kwargs):
         cmd.color(color, min_sel)
         cmd.color(color2, f"{min_sel} and (b > {bin_min2} and b < {bin_max2})")
 
+    # Create variation-sphere objects after the residue selections.
+    for chain in variant_chains:
+        tag = chain  # ← chain-only naming
+
+        tmp_sel = f"{selection}_temp_variants_{tag}"
+        var_obj = f"{selection}_{tag}_variations"
+
+        if var_obj in cmd.get_names("objects"):
+            cmd.delete(var_obj)
+
+        cmd.create(var_obj, tmp_sel)
+        apply_unique_translation(var_obj, r=0.5, used_directions=used_directions)
+
         cmd.delete(tmp_sel)
 
     # final viz
     cmd.bg_color("white")
-    cmd.hide("everything", f"({selection}) and (chain V or chain W or chain X or chain Y or chain Z)")
+
+    variant_chain_clause = " or ".join(
+        f"chain {chain}" for chain in variant_chains
+    )
+    cmd.hide("everything", f"({selection}) and ({variant_chain_clause})")
+
+    # Show molecules associated with chain A, excluding protein and solvent.
+    # Carbon stays pale green; custom_cba colors N/O/S/H by atom type.
+    cofactor_sel = (
+        f"({selection}) and chain A and not polymer.protein and not solvent"
+    )
+    cmd.show("sticks", cofactor_sel)
+    cmd.color(f"{selection}_cofactor_green", cofactor_sel)
+    custom_cba(cofactor_sel)
+    cmd.color("orange", f"({cofactor_sel}) and elem FE")
+
     cmd.set("specular", 0)
     cmd.set("use_shaders", 0)
 
@@ -261,7 +303,18 @@ def color_gnomcat(*args, **kwargs):
         custom_cba(f"{selection}_{tag}_min_residue")
 
     cmd.set("sphere_scale", 0.7)
-    cmd.hide("sticks", f"({selection}) and (chain A or chain V or chain W or chain X or chain Y)")
+    cmd.hide("sticks", f"({selection}) and (chain A or {variant_chain_clause})")
+
+    # Re-show the cofactor after the final stick-hiding command.
+    cmd.show("sticks", cofactor_sel)
+    cmd.color(f"{selection}_cofactor_green", cofactor_sel)
+    custom_cba(cofactor_sel)
+    cmd.color("orange", f"({cofactor_sel}) and elem FE")
+
+    print("Variant chain colors: " + ", ".join(
+        f"{chain}={chain_colors[chain][0].replace(f'{selection}_', '')}"
+        for chain in variant_chains
+    ))
 
 def pos_var(*args, **kwargs):
     """
@@ -358,6 +411,6 @@ def pos_var(*args, **kwargs):
         print("Not shown (matched chain A): " + ", ".join(skipped_match))
 
 # Register the functions with PyMOL
-cmd.extend("color_gnomaf", color_gnomaf)
-cmd.extend("color_gnomcat", color_gnomcat)
+cmd.extend("morph_af", morph_af)
+cmd.extend("morph_anc", morph_anc)
 cmd.extend("pos_var", pos_var)

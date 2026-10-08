@@ -6,6 +6,7 @@ import sys
 import functools
 from copy import deepcopy
 from datetime import datetime
+from io import StringIO
 from collections import defaultdict
 from dataclasses import dataclass
 from string import ascii_uppercase
@@ -45,8 +46,8 @@ CLASH_HARD_CUTOFF_A: float = 3.0
 DEFAULT_BFACTOR = 42.0
 BACKBONE_NAMES = {"N", "CA", "C", "O", "OXT"}
 
-# For ancestry categories we assign chains starting at V, W, X, Y, Z...
-CHAIN_LABELS = list(ascii_uppercase[21:])  # V..Z
+# For ancestry categories we assign chains starting at U, V, W, X, Y, Z...
+CHAIN_LABELS = list(ascii_uppercase[19:])  # U..Z
 
 
 # ============================================================
@@ -77,6 +78,17 @@ class Mutation:
 
 
 class NoHydrogensSelect(Select):
+    def accept_atom(self, atom):
+        return atom.element != "H"
+
+
+class AtomRecordsOnlySelect(Select):
+    """Write only non-hydrogen atoms from standard (ATOM) residues."""
+
+    def accept_residue(self, residue):
+        hetflag = residue.id[0]
+        return not hetflag.strip()
+
     def accept_atom(self, atom):
         return atom.element != "H"
 
@@ -261,7 +273,7 @@ def normalize_pdb_chains(
 
     io = PDBIO()
     io.set_structure(structure)
-    io.save(pdb_out)
+    io.save(pdb_out, preserve_atom_numbering=True)
     return mapping
 
 
@@ -289,7 +301,13 @@ def extract_chainA_as_chain(
 
     io = PDBIO()
     io.set_structure(one_structure)
-    io.save(pdb_out)
+    # The category-chain template must contain only records that were ATOM
+    # records in chain A. HETATM residues from chain A are intentionally omitted.
+    io.save(
+        pdb_out,
+        select=AtomRecordsOnlySelect(),
+        preserve_atom_numbering=True,
+    )
 
 
 # ============================================================
@@ -494,7 +512,7 @@ def apply_mutations_with_pymut(
 
 def set_chain_bfactors_from_category(chain, category_data: Dict[int, Dict[str, Any]]) -> None:
     """
-    For a category chain (V/W/X/...), B-factor comes from that category's frequency at residue.
+    For a category chain (U/V/W/X/Y/...), B-factor comes from that category's frequency at residue.
     """
     for residue in chain:
         resnum = residue.id[1]
@@ -567,7 +585,7 @@ def merge_normalized_original_with_variant_chains(
     Final merge logic:
       1) start from normalized original (keeps ALL original chains)
       2) overwrite Chain A B-factors = max bin across categories per position
-      3) add/replace variant chains V/W/X/... with category-specific B-factors
+      3) add/replace variant chains U/V/W/X/Y/... with category-specific B-factors
     """
     original_structure = parse_structure(normalized_original_pdb, "original_norm")
     model = original_structure[0]
@@ -586,6 +604,18 @@ def merge_normalized_original_with_variant_chains(
 
         # category-chain b-factors from that category's frequency
         set_chain_bfactors_from_category(new_chain, top_category_data.get(category, {}))
+
+        # Give copied/mutated chains unique atom serials above every atom in the
+        # normalized original. This lets original CONECT records continue to
+        # reference the original ATOM/HETATM serial numbers.
+        existing_serials = [
+            int(getattr(atom, "serial_number", 0) or 0)
+            for atom in original_structure.get_atoms()
+        ]
+        next_serial = max(existing_serials, default=0) + 1
+        for atom in new_chain.get_atoms():
+            atom.serial_number = next_serial
+            next_serial += 1
 
         if chain_label in [c.id for c in model]:
             model.detach_child(chain_label)
@@ -642,7 +672,7 @@ def build_metadata_lines_with_category_mapping_and_sequences(
         "REMARK   1\n",
         "REMARK   1 B-FACTORS ARE ARBITRARILY ASSIGNED ACCORDING TO A SCHEME USEFUL.\n",
         "REMARK   1 FOR VISUALIZATION OF GNOMAD ANCESTRY SPECIFIC ALLELE FREQUENCY\n",
-        "REMARK   1 CHAINS V/W/X/... REPRESENT MOST COMMON VARIANTS PER CATEGORY AT EACH POSITION.\n",
+        "REMARK   1 CHAINS U/V/W/X/Y/... REPRESENT MOST COMMON VARIANTS PER CATEGORY AT EACH POSITION.\n",
         "REMARK   1 THESE CHAINS ARE NOT REAL PROTEINS AND CONTAIN UNREALISTIC STRUCTURAL ELEMENTS..\n",
         "REMARK   1\n",
     ]
@@ -683,12 +713,88 @@ def build_metadata_lines_with_category_mapping_and_sequences(
     )
     return combined
 
-def write_final_pdb(structure, metadata_lines: List[str], out_pdb: str) -> None:
-    io = PDBIO()
-    io.set_structure(structure)
+def _remap_chain_id_in_coordinate_line(line: str, chain_mapping: Dict[str, str]) -> str:
+    """Apply normalized chain-id changes to an original coordinate record."""
+    if len(line) > 21:
+        old_chain = line[21]
+        if old_chain in chain_mapping:
+            line = line[:21] + chain_mapping[old_chain] + line[22:]
+    return line
+
+
+def read_original_hetatm_and_conect_records(
+    original_pdb: str,
+    chain_mapping: Optional[Dict[str, str]] = None,
+) -> Tuple[List[str], List[str]]:
+    """Return original HETATM and CONECT records, preserving their text/order."""
+    chain_mapping = chain_mapping or {}
+    hetatm_lines: List[str] = []
+    conect_lines: List[str] = []
+
+    with open(original_pdb, "r") as handle:
+        for line in handle:
+            if line.startswith("HETATM"):
+                line = _remap_chain_id_in_coordinate_line(line, chain_mapping)
+                hetatm_lines.append(line if line.endswith("\n") else line + "\n")
+            elif line.startswith("CONECT"):
+                conect_lines.append(line if line.endswith("\n") else line + "\n")
+
+    return hetatm_lines, conect_lines
+
+
+def write_final_pdb(
+    structure,
+    metadata_lines: List[str],
+    original_pdb: str,
+    out_pdb: str,
+    original_chain_mapping: Optional[Dict[str, str]] = None,
+) -> None:
+    """
+    Write generated protein ATOM records, then restore original HETATM/CONECT.
+
+    Category chains therefore contain only ATOM records copied from chain A,
+    while original hetero atoms and connectivity records appear exactly once.
+    """
+    pdb_io = PDBIO()
+    pdb_io.set_structure(structure)
+
+    atom_buffer = StringIO()
+    pdb_io.save(
+        atom_buffer,
+        select=AtomRecordsOnlySelect(),
+        write_end=False,
+        preserve_atom_numbering=True,
+    )
+
+    hetatm_lines, conect_lines = read_original_hetatm_and_conect_records(
+        original_pdb,
+        chain_mapping=original_chain_mapping,
+    )
+
+    atom_lines = atom_buffer.getvalue().splitlines(keepends=True)
+
+    # PDBIO creates TER serials from the preceding ATOM serial. When an
+    # original HETATM occupies that next serial, this can create a duplicate.
+    # Move generated TER serials above every ATOM/HETATM serial in the output.
+    coordinate_serials: List[int] = []
+    for line in atom_lines + hetatm_lines:
+        if line.startswith(("ATOM  ", "HETATM")):
+            try:
+                coordinate_serials.append(int(line[6:11]))
+            except ValueError:
+                pass
+    next_ter_serial = max(coordinate_serials, default=0) + 1
+    for index, line in enumerate(atom_lines):
+        if line.startswith("TER"):
+            atom_lines[index] = line[:6] + f"{next_ter_serial:5d}" + line[11:]
+            next_ter_serial += 1
+
     with open(out_pdb, "w") as out:
         out.writelines(metadata_lines)
-        io.save(out, select=NoHydrogensSelect())
+        out.writelines(atom_lines)
+        out.writelines(hetatm_lines)
+        out.writelines(conect_lines)
+        out.write("END\n")
 
 # ============================================================
 # Main pipeline (ancestry categories)
@@ -777,7 +883,7 @@ def run_pipeline_categories(input_tsv: str, input_pdb: str, output_dir: str, cat
         # IMPORTANT: merge function must:
         #  - keep all original chains from normalized_pdb
         #  - set chain A B-factors = max-bin across categories per residue
-        #  - add/replace V/W/X/... chains with category B-factors
+        #  - add/replace U/V/W/X/Y/... chains with category B-factors
         structure = merge_normalized_original_with_variant_chains(
             normalized_original_pdb=normalized_pdb,
             variant_chain_pdbs=variant_chain_pdbs,
@@ -792,7 +898,13 @@ def run_pipeline_categories(input_tsv: str, input_pdb: str, output_dir: str, cat
             chain_labels=chain_labels,
             chains_to_report=set(["A"] + chain_labels),
         )
-        write_final_pdb(structure, metadata, final_out)
+        write_final_pdb(
+            structure,
+            metadata,
+            original_pdb=input_pdb,
+            out_pdb=final_out,
+            original_chain_mapping=mapping,
+        )
 
     finally:
         for p in temp_paths:

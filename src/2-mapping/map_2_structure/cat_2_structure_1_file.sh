@@ -30,7 +30,7 @@ OUTPUT_DIR="${BASE_PATH}/data/2-processed/stuff"
 SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/pymut_gnomad_anc_2_structure.py"
 
 # Define the categories parameter (comma-separated list, e.g., "nfe,fin,amr" or "allele_frequency")
-CATEGORIES="nfe,sas,afr,eas,fin"  # Modify this to fit your use case
+CATEGORIES="nfe,sas,afr,fin,amr"  # Modify this to fit your use case
 
 # -------------------------
 # Environment setup
