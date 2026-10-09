@@ -2,7 +2,7 @@
 
 **Human missense variation, mapped onto protein structure.**
 
-MORPH (*Map Missense on Reference Protein Human*) connects gnomAD population frequencies, AlphaMissense predictions, and human protein structures. Explore where observed missense variants occur in 3D, compare frequencies across genetic ancestry groups, and inspect alternative amino-acid side chains in PyMOL.
+MORPH (*Missense on Reference Protein Human*) connects gnomAD population frequencies, AlphaMissense predictions, and human protein structures. Explore where observed missense variants occur in 3D, compare frequencies across genetic ancestry groups, and inspect alternative amino-acid side chains in PyMOL.
 
 The **guided notebook is the intended starting point for researchers who prefer a step-by-step workflow**. The Python and shell scripts support advanced users who want to automate mapping or rebuild the underlying datasets.
 
@@ -13,7 +13,7 @@ The **guided notebook is the intended starting point for researchers who prefer 
 - **Population variation in structural context:** map gnomAD missense allele frequencies onto a reference protein.
 - **Differences across ancestry groups:** build category-specific views using the frequency columns available in the prepared data.
 - **Alternative side chains:** visualize ranked substitutions alongside the reference structure using pyMUT-generated chains.
-- **AlphaMissense scores:** use the advanced scripts to map mean prediction scores per residue.
+- **AlphaMissense scores:** scripts available to map mean prediction scores per residue.
 - **An optional structure prediction:** the notebook includes a Boltz-2 workflow when you need to generate an input structure.
 
 ## Choose your workflow
