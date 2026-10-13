@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # -------------------------
-# SLURM configuration
+# SLURM configuration (submit from the repository root with sbatch)
 # -------------------------
 #SBATCH --job-name=am_pathogenicity_2_structure
-#SBATCH --output=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/%x_%j.out
-#SBATCH --error=/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view/log/%x_%j.err
+#SBATCH --output=log/%x_%j.out
+#SBATCH --error=log/%x_%j.err
 
 #SBATCH --qos=fast
 #SBATCH --time=00:30:00
@@ -17,19 +17,30 @@
 # -------------------------
 # User configuration
 # -------------------------
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
+# Resolve project paths from the original script location.
+# Slurm can fall back to the repository root set by SLURM_SUBMIT_DIR.
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)" || exit 1
+if [[ ! -f "${SCRIPT_DIR}/__config.sh" && -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+    if [[ -f "${SLURM_SUBMIT_DIR}/__config.sh" ]]; then
+        SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
+    else
+        SCRIPT_DIR="${SLURM_SUBMIT_DIR}/src/2-map_2_structure/server_wrappers"
+    fi
+fi
+BASE_PATH="$(cd -- "${SCRIPT_DIR}/../../.." && pwd)" || exit 1
+source "${SCRIPT_DIR}/__config.sh" || exit 1
 UNIPROT_ID="P10635"
 
 INPUT_TSV="${BASE_PATH}/data/2-processed/missense_jul/aa_substitutions/${UNIPROT_ID}_aa_substitutions.tsv"
 INPUT_PDB="${BASE_PATH}/data/2-processed/pdb/${UNIPROT_ID}.pdb"
 OUTPUT_PDB="${BASE_PATH}/data/2-processed/stuff/${UNIPROT_ID}_am_pathogenicity_bfactor.pdb"
 
-SCRIPT_PATH="${BASE_PATH}/src/2-mapping/map_2_structure/all_aa_AM_2_structure.py"
+SCRIPT_PATH="${SCRIPT_DIR}/../all_aa_AM_2_structure.py"
 
 # -------------------------
 # Environment setup
 # -------------------------
-source /pasteur/appa/homes/lchataig/miniconda3/etc/profile.d/conda.sh
+source "${CONDA_SH}" || exit 1
 conda deactivate || true
 conda activate pymut-env
 

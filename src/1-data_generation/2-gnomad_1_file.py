@@ -105,11 +105,11 @@ def create_frequency_table(ht: hl.Table, output_path: str, meta_keys_all: list):
 
 def remove_crc_files(directory: str, base_name: str) -> None:
     """
-    Remove .crc files matching the pattern <base_name>_GnomAD.tsv.crc in the given directory.
+    Remove .crc files matching the pattern <base_name>_gnomAD.tsv.crc in the given directory.
 
     :param directory: The directory where the .crc files are located.
     :param base_name: The dynamic base name to match (e.g., Q5VST9). Only files following the 
-                      pattern <base_name>_GnomAD.tsv.crc will be removed.
+                      pattern <base_name>_gnomAD.tsv.crc will be removed.
     """
     # Construct the file pattern based on the base name
     pattern = os.path.join(directory, f".{base_name}_gnomAD.tsv.crc")
@@ -133,8 +133,8 @@ def process_file(tsv_path: str, ht_path: str, output_dir: str, log_dir: str, met
     # Extract the base name from the TSV path (e.g., P01834 from P01834_missense.tsv)
     base_name = os.path.basename(tsv_path).split('_')[0]
     
-    # Create the output file name in the format P01834_GnomAD.tsv
-    output_file_name = f"{base_name}_GnomAD.tsv"
+    # Create the output file name in the format P01834_gnomAD.tsv
+    output_file_name = f"{base_name}_gnomAD.tsv"
     
     # Combine with output directory
     output_path = os.path.join(output_dir, output_file_name)

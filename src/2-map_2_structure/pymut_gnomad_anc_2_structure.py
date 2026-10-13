@@ -222,6 +222,40 @@ def get_chain_resname_map(pdb_path: str, chain_id: str) -> Dict[int, str]:
     return res_map
 
 
+def validate_variant_reference_residues(df: pd.DataFrame, chain_res_map: Dict[int, str]) -> None:
+    """Reject variants whose reference amino acid disagrees with chain A at that position."""
+    overlapping = 0
+    mismatches = []
+    for value in df["protein_variant"].dropna().unique():
+        variant = str(value)
+        match = re.fullmatch(r"([A-Z])([1-9][0-9]*)([A-Z])", variant)
+        if match is None:
+            raise ValueError(f"Unsupported protein_variant format: {variant}")
+        ref1, position_text, alt1 = match.groups()
+        ref3 = AA1_TO_AA3.get(ref1)
+        if ref3 is None or alt1 not in AA1_TO_AA3:
+            raise ValueError(f"Unsupported amino acid in protein_variant: {variant}")
+        position = int(position_text)
+        observed = chain_res_map.get(position)
+        if observed is None:
+            continue
+        overlapping += 1
+        if observed != ref3:
+            mismatches.append(f"{variant} at {position}: PDB has {observed}, TSV expects {ref3}")
+
+    if mismatches:
+        examples = "; ".join(mismatches[:5])
+        raise ValueError(
+            f"Chain A does not match the variant reference sequence ({len(mismatches)} mismatches). "
+            f"{examples}. Check UniProt residue numbering and sequence."
+        )
+    if not df.empty and overlapping == 0:
+        raise ValueError(
+            "No retained variant positions overlap chain A residue numbers. "
+            "Check that the PDB uses UniProt residue numbering."
+        )
+
+
 def free_reserved_chain_ids(model, reserved_chain_ids: Set[str]) -> Dict[str, str]:
     existing = {c.id for c in model}
     mapping: Dict[str, str] = {}
@@ -824,6 +858,7 @@ def run_pipeline_categories(input_tsv: str, input_pdb: str, output_dir: str, cat
 
         log("2) WT residue map from chain A (original PDB)")
         chainA_res_map = get_chain_resname_map(input_pdb, "A")
+        validate_variant_reference_residues(df, chainA_res_map)
 
         log("3) Normalize original PDB (free reserved chain ids + normalize residue names)")
         normalized_pdb = os.path.join(output_dir, f"{uniprot_id}__tmp_normalized_original.pdb")

@@ -466,6 +466,7 @@ def reorder_columns(df: pd.DataFrame) -> pd.DataFrame:
 def process_file(input_file: str, output_dir: str, hg38_dir: str, aa_sub_dir: str, 
                  vep_sif: str, cache_dir: str, clinvar_vcf: str, filter_single_bp: bool = False) -> None:
     """Load, transform, filter, add 'uniprot_id', run VEP with ClinVar, and save GnomAD TSV data."""
+    os.makedirs(output_dir, exist_ok=True)
     # Load & Transform data
     df = load_tsv(input_file)
     df = transform_gnomad_data(df)
@@ -495,7 +496,6 @@ def process_file(input_file: str, output_dir: str, hg38_dir: str, aa_sub_dir: st
     # Save Data
     output_file_name = f"{base_name}_amissenseXgnomAD.tsv" # Prepare output path
     output_path = os.path.join(output_dir, output_file_name)
-    os.makedirs(output_dir, exist_ok=True) # Ensure output directory exists
     df.to_csv(output_path, sep='\t', index=False) # Save the merged data
     print(f"Saved annotated data with VEP and ClinVar to {output_path}")
 

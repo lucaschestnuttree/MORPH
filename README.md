@@ -2,11 +2,11 @@
 
 **Human missense variation, mapped onto protein structure.**
 
-MORPH (*Missense on Reference Protein Human*) connects gnomAD population frequencies, AlphaMissense predictions, and human protein structures. Explore where observed missense variants occur in 3D, compare frequencies across genetic ancestry groups, and inspect alternative amino-acid side chains in PyMOL.
+MORPH (*Missense on Reference Protein Human*) connects gnomAD population frequencies and human protein structure predictions. Explore where observed missense variants occur in 3D, compare frequencies across genetic ancestry groups, and inspect alternative amino-acid side chains in PyMOL.
 
 The **guided notebook is the intended starting point for researchers who prefer a step-by-step workflow**. The Python and shell scripts support advanced users who want to automate mapping or rebuild the underlying datasets.
 
-> **Release status:** the notebook has not yet been committed, and the prepared dataset is awaiting publication on Zenodo. The public notebook workflow is not ready to run yet; its Colab launch link and dataset DOI will be added when both are released.
+> **Release status:** The three workflow notebooks are available in `src/`, and the prepared dataset is publicly available on [Zenodo](https://zenodo.org/records/18163874).
 
 ## What you can explore
 
@@ -20,13 +20,15 @@ The **guided notebook is the intended starting point for researchers who prefer 
 
 | Your goal | Where to start | Experience needed |
 | --- | --- | --- |
-| Explore one protein through a guided workflow | MORPH notebook in Google Colab — release pending | Follow notebook instructions and use PyMOL |
+| Generate a structure | [1-Boltz2.ipynb](src/1-Boltz2.ipynb) | Google Colab GPU runtime |
+| Map prepared variation onto a structure | [2-MORPH.ipynb](src/2-MORPH.ipynb) | Google Colab CPU runtime |
+| Explore mapped structures | [3-pymol.ipynb](src/3-pymol.ipynb) | PyMOL |
 | Map prepared variant data onto your own structures | [Advanced usage guide](docs/advanced-usage.md#map-prepared-data-to-a-structure) | Python, command line, and environment setup |
 | Rebuild or extend the prepared datasets | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data) | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
 
 ## Start with the notebook
 
-The planned entry point is `src/MORPH_notebook.ipynb`. It brings together protein validation, data retrieval, structure mapping, and output downloads in Google Colab.
+The workflow is split into three notebooks: [1-Boltz2.ipynb](src/1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](src/2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](src/3-pymol.ipynb) walks through visualization in PyMOL. The original combined notebook remains available as `src/MORPH_notebook.ipynb`.
 
 ### What you will need
 
@@ -35,28 +37,28 @@ The planned entry point is `src/MORPH_notebook.ipynb`. It brings together protei
 - Corresponding variant data in the prepared dataset. Coverage is checked through its lookup table.
 - **PyMOL** to explore the exported structures with the supplied visualization helpers.
 
-If you already have a suitable PDB, start with the mapping section. The optional Boltz-2 prediction section uses a GPU runtime; the mapping section uses a CPU runtime.
+If you already have a suitable PDB, start with [2-MORPH.ipynb](src/2-MORPH.ipynb). The optional [1-Boltz2.ipynb](src/1-Boltz2.ipynb) uses a GPU runtime; the mapping notebook uses a CPU runtime.
 
 ### The intended workflow
 
 1. **Choose your protein.** Enter its UniProt accession and validate the reviewed human entry.
-2. **Provide a structure.** Upload a suitable PDB, or generate and download one through the optional Boltz-2 section.
+2. **Provide a structure.** Upload a suitable PDB, or generate and download one through `1-Boltz2.ipynb`.
 3. **Retrieve prepared data.** The notebook uses a UniProt lookup table to select the relevant Zenodo archive.
 4. **Choose a mapping mode.** Use overall allele frequency or select genetic ancestry categories.
-5. **Download and explore.** Export the annotated PDB and load it in PyMOL with the [visualization helpers](docs/advanced-usage.md#view-in-pymol).
+5. **Download and explore.** Export the annotated PDB and follow `3-pymol.ipynb` or the [visualization helpers](docs/advanced-usage.md#view-in-pymol).
 
 The prepared dataset is intended to let notebook users explore a protein without running the full data-generation pipeline.
 
 ## Prepared data
 
-The code and the large data files are distributed separately. The public Zenodo release will provide:
+The code and the large data files are distributed separately. The public Zenodo release provides:
 
 | File | Purpose |
 | --- | --- |
 | `lookup_amissenseXgnomAD.tsv` | Maps each available UniProt accession to an archive and its per-protein TSV |
 | `amissenseXgnomAD_part*.tar.gz` | Batches of per-protein variant tables combining AlphaMissense data, gnomAD frequencies, and VEP/ClinVar annotations |
 
-**Public dataset link and DOI: pending publication.**
+**Public dataset: [Zenodo record 18163874](https://zenodo.org/records/18163874).**
 
 The existing data-generation wrappers target the gnomAD joint v4.1 sites table and AlphaMissense hg38/amino-acid substitution tables. Exact input versions and provenance should accompany the Zenodo release. Raw data, processed data, and logs are excluded from source control.
 
@@ -81,11 +83,13 @@ README.md                         Project overview and notebook entry point
 docs/advanced-usage.md            Command-line workflows and annotation details
 requirements/                    Development environment definitions and exports
 src/
-   MORPH_notebook.ipynb            Guided Colab notebook (not yet committed)
+   1-Boltz2.ipynb                  Optional Boltz-2 structure prediction notebook
+   2-MORPH.ipynb                   Variation mapping notebook
+   3-pymol.ipynb                   PyMOL visualization walkthrough
+   MORPH_notebook.ipynb            Original combined notebook
    1-data_generation/             Download, harmonize, annotate, and package data
-   2-mapping/
-     map_2_structure/              Map prepared values and substitutions to PDBs
-     pymol/                        PyMOL coloring and selection helpers
+   2-map_2_structure/             Map prepared values and substitutions to PDBs
+   3-pymol/                        PyMOL coloring and selection helpers
 data/                            Local raw and processed data (ignored by Git)
 log/                             Local execution logs (ignored by Git)
 ```

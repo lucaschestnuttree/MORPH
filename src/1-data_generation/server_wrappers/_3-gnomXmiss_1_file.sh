@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # -------------------------
-# SLURM configuration
+# SLURM configuration (submit with sbatch from this directory)
 # -------------------------
 
 #SBATCH --job-name=gnomXmiss_1file_clin
@@ -15,26 +15,41 @@
 #SBATCH --mem=128G             
 #SBATCH -p ggs
 
+set -euo pipefail
+
 # -------------------------
 # User configuration
 # -------------------------
 
 # Define paths & parameters
 
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
+# Work from this wrapper's folder; recover it for Slurm's temporary copy.
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+if [[ ! -f __config.sh && -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+    cd "$SLURM_SUBMIT_DIR" || exit 1
+    # Submission may come from the project root or any of its subfolders.
+    while [[ ! -d src/1-data_generation/server_wrappers ]]; do
+        if [[ "$PWD" == / ]]; then
+            echo "ERROR: Cannot find the project from SLURM_SUBMIT_DIR=$SLURM_SUBMIT_DIR" >&2
+            exit 1
+        fi
+        cd .. || exit 1
+    done
+    cd src/1-data_generation/server_wrappers || exit 1
+fi
+SCRIPT_DIR="$PWD"
+BASE_PATH="$(cd ../../.. && pwd)" || exit 1
+source ./__config.sh || exit 1
 
-GNOM_FILE="${BASE_PATH}/data/2-processed/missense_jul/gnomAD_AF/P15382_gnomAD.tsv"
-OUTPUT_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD"
+GNOM_FILE="$BASE_PATH/data/2-processed/missense_jul/gnomAD_AF/P15382_gnomAD.tsv"
+OUTPUT_DIR="$BASE_PATH/data/2-processed/amissenseXgnomAD"
 
-VEP_SIF="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/ensemble-VEP/vep.sif"
-CACHE_DIR="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/ensemble-VEP/vep_data"
-HG38_SUBSTITUTIONS_DIR="${BASE_PATH}/data/2-processed/missense_jul/hg38"
-AA_SUBSTITUTIONS_DIR="${BASE_PATH}/data/2-processed/missense_jul/aa_substitutions"
-CLINVAR_VCF="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/ensemble-VEP/custom_annotations/clinvar.vcf.gz"
+HG38_SUBSTITUTIONS_DIR="$BASE_PATH/data/2-processed/missense_jul/hg38"
+AA_SUBSTITUTIONS_DIR="$BASE_PATH/data/2-processed/missense_jul/aa_substitutions"
 
 FILTER_SINGLE_BP=1 # Optional flag for filtering single-letter alleles (1 for True, 0 for False)
 
-SCRIPT_PATH="${BASE_PATH}/src/1-data_generation/4-missense_gnomXmiss_1_file.py"
+SCRIPT_PATH="../3-missense_gnomXmiss_1_file.py"
 
 # -------------------------
 # Environment setup
@@ -44,7 +59,7 @@ SCRIPT_PATH="${BASE_PATH}/src/1-data_generation/4-missense_gnomXmiss_1_file.py"
 module load apptainer
 
 # Activate conda environment
-source /pasteur/appa/homes/lchataig/miniconda3/etc/profile.d/conda.sh
+source "${CONDA_SH}" || exit 1
 conda deactivate || true
 conda activate hail
 

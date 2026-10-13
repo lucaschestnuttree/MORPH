@@ -4,24 +4,40 @@ set -euo pipefail
 # ============================================================
 # Base path
 # ============================================================
-BASE_PATH="/pasteur/helix/projects/GGS_JASS/WKD_Lucas/missense_structure_view"
+# Work from this wrapper's folder; recover it for Slurm's temporary copy.
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+if [[ ! -f __config.sh && -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+    cd "$SLURM_SUBMIT_DIR" || exit 1
+    # Submission may come from the project root or any of its subfolders.
+    while [[ ! -d src/1-data_generation/server_wrappers ]]; do
+        if [[ "$PWD" == / ]]; then
+            echo "ERROR: Cannot find the project from SLURM_SUBMIT_DIR=$SLURM_SUBMIT_DIR" >&2
+            exit 1
+        fi
+        cd .. || exit 1
+    done
+    cd src/1-data_generation/server_wrappers || exit 1
+fi
+SCRIPT_DIR="$PWD"
+BASE_PATH="$(cd ../../.. && pwd)" || exit 1
+source ./__config.sh || exit 1
 
 # ============================================================
 # Inputs
 # ============================================================
-ALPHA="${BASE_PATH}/data/1-raw/missense_db/AlphaMissense_hg38.tsv"
+ALPHA="$BASE_PATH/data/1-raw/missense_db/AlphaMissense_hg38.tsv"
 
-HG38_DIR="${BASE_PATH}/data/2-processed/missense_jul/hg38"
-AA_DIR="${BASE_PATH}/data/2-processed/missense_jul/aa_substitutions"
-GNOMAD_DIR="${BASE_PATH}/data/2-processed/missense_jul/gnomAD_AF"
-AXG_DIR="${BASE_PATH}/data/2-processed/amissenseXgnomAD"
+HG38_DIR="$BASE_PATH/data/2-processed/missense_jul/hg38"
+AA_DIR="$BASE_PATH/data/2-processed/missense_jul/aa_substitutions"
+GNOMAD_DIR="$BASE_PATH/data/2-processed/missense_jul/gnomAD_AF"
+AXG_DIR="$BASE_PATH/data/2-processed/amissenseXgnomAD"
 
 # ============================================================
 # Outputs
 # ============================================================
-OUT_INDEX="${BASE_PATH}/data/2-processed/index.tsv"
-OUT_COUNTS="${BASE_PATH}/data/2-processed/total_counts.txt"
-MISSING_AXG="${BASE_PATH}/data/2-processed/missing_amissenseXgnomAD.txt"
+OUT_INDEX="$BASE_PATH/log/index.tsv"
+OUT_COUNTS="$BASE_PATH/log/total_counts.txt"
+MISSING_AXG="$BASE_PATH/log/missing_amissenseXgnomAD.txt"
 
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "$TMPDIR"' EXIT
@@ -69,10 +85,15 @@ find "$GNOMAD_DIR" -type f -name "*_gnomAD.tsv" \
   | sort -u > "$TMPDIR/gnomad.ids"
 
 # amissenseXgnomAD: *_amissenseXgnomAD.tsv
-find "$AXG_DIR" -type f -name "*_amissenseXgnomAD.tsv" \
-  -printf "%f\n" \
-  | awk -F'_' '{print $1}' \
-  | sort -u > "$TMPDIR/axg.ids"
+if [[ -d "$AXG_DIR" ]]; then
+  find "$AXG_DIR" -type f -name "*_amissenseXgnomAD.tsv" \
+    -printf "%f\n" \
+    | awk -F'_' '{print $1}' \
+    | sort -u > "$TMPDIR/axg.ids"
+else
+  echo "WARNING: $AXG_DIR does not exist; counting amissenseXgnomAD as 0 files." >&2
+  : > "$TMPDIR/axg.ids"
+fi
 
 # ------------------------------------------------------------
 # 3b) Write IDs missing from amissenseXgnomAD (master - axg)
