@@ -18,16 +18,24 @@ The repository contains paired Conda YAML definitions and Conda package exports 
 | `hail`      | Query gnomAD with Hail                       | [environment-hail.yml](../requirements/environment-hail.yml)         | [requirements-hail.txt](../requirements/requirements-hail.txt)         |
 | `pymut-env` | Map scores and build alternative side chains | [environment-pymut.yml](../requirements/environment-pymut.yml)       | [requirements-pymut.txt](../requirements/requirements-pymut.txt)       |
 
-The YAML files are development definitions and still contain machine-specific `prefix:` entries; remove or adapt those before creating environments elsewhere. The `.txt` files are Conda exports with pinned package versions, including Hail in `requirements-hail.txt`; they are most useful for rebuilding on a similar Linux system, not as portable pip input. pyMUT is external to these files, so clone/install [pyMUT](https://github.com/gerdos/pyMUT) before running the mapping scripts. A minimal mapping environment is:
+The YAML files are portable environment definitions with package names and channels. The `.txt` files are Conda exports with pinned package versions, including Hail in `requirements-hail.txt`; they are most useful for rebuilding on a similar Linux system, not as portable pip input. Use the `pymut-env` environment for structure mapping, and clone/install [pyMUT](https://github.com/gerdos/pyMUT) before running the mapping scripts:
 
 ```bash
-conda create -n morph-mapping -c conda-forge python=3.10 "numpy<2" pandas biopython
-conda activate morph-mapping
+conda activate pymut-env
 git clone https://github.com/gerdos/pyMUT.git ../pyMUT
 export PYTHONPATH="$(cd ../pyMUT && pwd)"
 ```
 
-PyMOL helpers require a separate PyMOL installation.
+For local structure viewing, install open-source PyMOL from conda-forge either in your active environment or in a dedicated environment:
+
+```bash
+# Install into the active environment
+conda install conda-forge::pymol-open-source
+
+# Or create a dedicated PyMOL environment
+conda create -n pymol -c conda-forge pymol-open-source
+conda activate pymol
+```
 
 ## Wrapper configuration
 
@@ -217,4 +225,5 @@ The gnomAD and merge launchers each create a job list and submit a Slurm array. 
 Data-generation shell scripts and `__config.sh` are in `src/1-data_generation/server_wrappers/`; the Python scripts and array ID lists are in `src/1-data_generation/`. Set external locations in each group's `__config.sh`, then adapt Slurm partition, QoS, and resources for your cluster. Submit jobs with `sbatch` from the wrapper directory. The `amissense_check.sh`, `output_counts.sh`, and `output_empties.sh` scripts check local data; their reports and categorized TSV copies are written under `log/`. The `rosetta_*_old.py` files are legacy implementations; the pyMUT scripts are the current mapping workflow.
 
 Record the source releases, genome build, VEP/cache version, ClinVar date, filtering choices, package versions, and checksums with any regenerated dataset.
+
 
