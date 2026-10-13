@@ -10,17 +10,15 @@ The Python and shell scripts support users who want to run jobs on their machine
 
 ## Start with the notebook(s)
 
-The workflow is split into three notebooks:
-
-### Generate an input structure:
+### 1. Generate an input structure:
 
 - 1-Boltz2.ipynb [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb)
 
-### Validate and map variations
+### 2. Validate and map variations
 
 - 2-MORPH.ipynb · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb)
 
-### Walk through of PyMOL visualization.
+### 3. Walk through of PyMOL visualization.
 
 - 3-pymol.ipynb· [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb)
 
