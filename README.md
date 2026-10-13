@@ -6,7 +6,7 @@ MORPH (*Missense on Reference Protein Human*) connects gnomAD population frequen
 
 The **guided notebook is the intended starting point for researchers who prefer a step-by-step workflow**. The Python and shell scripts support advanced users who want to automate mapping or rebuild the underlying datasets.
 
-> **Release status:** The three workflow notebooks are available in `src/`, and the prepared dataset is publicly available on [Zenodo](https://zenodo.org/records/18163874).
+> **Release status:** The three workflow notebooks are available at the repository root, and the prepared dataset is publicly available on [Zenodo](https://zenodo.org/records/18163874).
 
 ## What you can explore
 
@@ -20,15 +20,15 @@ The **guided notebook is the intended starting point for researchers who prefer 
 
 | Your goal | Where to start | Experience needed |
 | --- | --- | --- |
-| Generate a structure | [1-Boltz2.ipynb](src/1-Boltz2.ipynb) | Google Colab GPU runtime |
-| Map prepared variation onto a structure | [2-MORPH.ipynb](src/2-MORPH.ipynb) | Google Colab CPU runtime |
-| Explore mapped structures | [3-pymol.ipynb](src/3-pymol.ipynb) | PyMOL |
+| Generate a structure | [1-Boltz2.ipynb](1-Boltz2.ipynb) | Google Colab GPU runtime |
+| Map prepared variation onto a structure | [2-MORPH.ipynb](2-MORPH.ipynb) | Google Colab CPU runtime |
+| Explore mapped structures | [3-pymol.ipynb](3-pymol.ipynb) | PyMOL |
 | Map prepared variant data onto your own structures | [Advanced usage guide](docs/advanced-usage.md#map-prepared-data-to-a-structure) | Python, command line, and environment setup |
 | Rebuild or extend the prepared datasets | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data) | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
 
 ## Start with the notebook
 
-The workflow is split into three notebooks: [1-Boltz2.ipynb](src/1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](src/2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](src/3-pymol.ipynb) walks through visualization in PyMOL. The original combined notebook remains available as `src/MORPH_notebook.ipynb`.
+The workflow is split into three notebooks: [1-Boltz2.ipynb](1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](3-pymol.ipynb) walks through visualization in PyMOL. The original combined notebook remains available as `MORPH_complete.ipynb`.
 
 ### What you will need
 
@@ -37,7 +37,7 @@ The workflow is split into three notebooks: [1-Boltz2.ipynb](src/1-Boltz2.ipynb)
 - Corresponding variant data in the prepared dataset. Coverage is checked through its lookup table.
 - **PyMOL** to explore the exported structures with the supplied visualization helpers.
 
-If you already have a suitable PDB, start with [2-MORPH.ipynb](src/2-MORPH.ipynb). The optional [1-Boltz2.ipynb](src/1-Boltz2.ipynb) uses a GPU runtime; the mapping notebook uses a CPU runtime.
+If you already have a suitable PDB, start with [2-MORPH.ipynb](2-MORPH.ipynb). The optional [1-Boltz2.ipynb](1-Boltz2.ipynb) uses a GPU runtime; the mapping notebook uses a CPU runtime.
 
 ### The intended workflow
 
@@ -83,10 +83,10 @@ README.md                         Project overview and notebook entry point
 docs/advanced-usage.md            Command-line workflows and annotation details
 requirements/                    Development environment definitions and exports
 src/
-   1-Boltz2.ipynb                  Optional Boltz-2 structure prediction notebook
-   2-MORPH.ipynb                   Variation mapping notebook
-   3-pymol.ipynb                   PyMOL visualization walkthrough
-   MORPH_notebook.ipynb            Original combined notebook
+1-Boltz2.ipynb                      Optional Boltz-2 structure prediction notebook
+2-MORPH.ipynb                       Variation mapping notebook
+3-pymol.ipynb                       PyMOL visualization walkthrough
+MORPH_complete.ipynb                Original combined notebook
    1-data_generation/             Download, harmonize, annotate, and package data
    2-map_2_structure/             Map prepared values and substitutions to PDBs
    3-pymol/                        PyMOL coloring and selection helpers
@@ -106,6 +106,6 @@ MORPH builds on the following datasets and tools:
 - **Ensembl VEP and ClinVar:** annotations used by the data-generation pipeline.
 - **Tamas Hegedus, hegelab.org:** author credited in the supplied AlphaMissense PyMOL coloring helper.
 
-When reporting results, cite the upstream datasets and tools used, and the MORPH dataset DOI once it is available.
+When reporting results, cite the upstream datasets and tools used, and the public MORPH Zenodo record linked above.
 
 **Project license:** not yet specified. Upstream datasets and dependencies retain their own licenses and attribution requirements.
