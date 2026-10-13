@@ -153,19 +153,17 @@ Variant chains are composite visualization constructs. Their side chains are gen
 
 Before submitting jobs:
 
-1. Create the environments from the three YAML files in `requirements/`.
-2. Use `operator` for download, preparation, parsing, and merging.
-3. Use `hail` for gnomAD extraction; install or obtain Hail and its Java/Spark runtime.
-4. Use `pymut-env` for structure mapping; clone/install pyMUT.
-5. Edit both `__config.sh` files with your paths, cache locations, ClinVar/VEP files, Conda initialization, and Slurm settings.
+1. Create Conda environments from the YAML & requirements.
+2. Install or obtain Hail with Java/Spark, a compatible Hail table, VEP Singularity image/cache, and a ClinVar VCF for the gnomAD workflow.
+3. Edit src/1-data_generation/server_wrappers/\_\_config.sh with the Conda initialization, data paths, Hail table, VEP image/cache, ClinVar VCF, and Slurm settings.
 
-| Step    | Slurm/Bash wrapper                                                                          | Python script                                                                               | Environment and purpose                          |
-| ------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Fetch   | [`_0-fetch.sh`](../src/1-data_generation/server_wrappers/_0-fetch.sh)                       | [`0-fetch_AM.py`](../src/1-data_generation/0-fetch_AM.py)                                   | `operator`; download and prepare AlphaMissense   |
-| Parse   | [`_1-parse_AM_data.sh`](../src/1-data_generation/server_wrappers/_1-parse_AM_data.sh)       | [`1-parse_AM_data.py`](../src/1-data_generation/1-parse_AM_data.py)                         | `operator`; create per-UniProt tables            |
-| gnomAD  | [`_2-gnomad-batch.sh`](../src/1-data_generation/server_wrappers/_2-gnomad-batch.sh)         | [`2-gnomad_1_file.py`](../src/1-data_generation/2-gnomad_1_file.py)                         | `hail`; extract overall and category frequencies |
-| Merge   | [`_3-gnomXmiss_sbatch.sh`](../src/1-data_generation/server_wrappers/_3-gnomXmiss_sbatch.sh) | [`3-missense_gnomXmiss_1_file.py`](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | `operator` plus VEP/ClinVar; merge and annotate  |
-| Package | [`tar_amissenseXgnome.sh`](../src/1-data_generation/server_wrappers/tar_amissenseXgnome.sh) | -                                                                                           | package completed per-protein outputs            |
+| Step   | Slurm/Bash wrapper                                                                          | Python script                                                                               | Environment and purpose                          |
+| ------ | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Fetch  | [`_0-fetch.sh`](../src/1-data_generation/server_wrappers/_0-fetch.sh)                       | [`0-fetch_AM.py`](../src/1-data_generation/0-fetch_AM.py)                                   | `operator`; download and prepare AlphaMissense   |
+| Parse  | [`_1-parse_AM_data.sh`](../src/1-data_generation/server_wrappers/_1-parse_AM_data.sh)       | [`1-parse_AM_data.py`](../src/1-data_generation/1-parse_AM_data.py)                         | `operator`; create per-UniProt tables            |
+| gnomAD | [`_2-gnomad-batch.sh`](../src/1-data_generation/server_wrappers/_2-gnomad-batch.sh)         | [`2-gnomad_1_file.py`](../src/1-data_generation/2-gnomad_1_file.py)                         | `hail`; extract overall and category frequencies |
+| Merge  | [`_3-gnomXmiss_sbatch.sh`](../src/1-data_generation/server_wrappers/_3-gnomXmiss_sbatch.sh) | [`3-missense_gnomXmiss_1_file.py`](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | `operator` plus VEP/ClinVar; merge and annotate  |
+| -      | package completed per-protein outputs                                                       |
 
 From `src/1-data_generation/server_wrappers/`, submit each stage after the previous one completes:
 
@@ -175,5 +173,3 @@ sbatch ./_1-parse_AM_data.sh
 sbatch ./_2-gnomad-batch.sh
 sbatch ./_3-gnomXmiss_sbatch.sh
 ```
-
-The gnomAD and merge stages also require a compatible Hail table, VEP Singularity image/cache, and ClinVar VCF. Set these locations in `src/1-data_generation/server_wrappers/__config.sh`; adapt Slurm partition, QoS, and resource settings for your cluster. The mapping wrappers use `src/2-map_2_structure/server_wrappers/__config.sh` and the `pymut-env` environment.
