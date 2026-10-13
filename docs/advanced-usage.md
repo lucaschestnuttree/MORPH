@@ -147,74 +147,36 @@ The mapping scripts store integer frequency bins in the PDB B-factor field. Both
 | 8   | `[0.51, 1.0)`                    | purple                                     | category-chain color                          |
 | 42  | No retained frequency annotation | pale yellow                                | not bin-colored                               |
 
-For `morph_anc`, category chains use a fixed palette: `T` yellow, `U` orange, `V` red, `W` violet, `X` blue, `Y` sky blue, and `Z` green. Pale versions are used for the narrower secondary range. Chain A is light grey, and non-protein cofactors are green.
-
-The mapper comparisons use a lower-inclusive and upper-exclusive interval (`lo <= frequency < hi`). Therefore, exactly `1.0` falls through to bin 0. The `1.0` endpoint shown in some helper comments is shorthand; the implemented bin interval is `[0.51, 1.0)`.
-
-The variant chains are composite visualization constructs. Their side chains are generated using pyMUT rotamers, with a fallback for detected clashes within the same chain. They do not represent validated mutant structures, observed haplotypes, or a full assessment of contacts with other chains or ligands.
+Variant chains are composite visualization constructs. Their side chains are generated using pyMUT rotamers, with a fallback for detected clashes within the same chain. They do not represent validated mutant structures, observed haplotypes, or a full assessment of contacts with other chains or ligands.
 
 ## Rebuild the prepared data
 
-The data-generation scripts cover these steps:
+Before submitting jobs:
 
-| Step              | Script                                                                                    | Purpose                                                                                                       |
-| ----------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Fetch             | [\_0-fetch.sh](../src/1-data_generation/server_wrappers/_0-fetch.sh)                      | Download the two AlphaMissense tables                                                                         |
-| Fetch preparation | [0-fetch_AM.py](../src/1-data_generation/0-fetch_AM.py)                                   | Decompress and prepare the downloaded tables                                                                  |
-| Parse             | [1-parse_AM_data.py](../src/1-data_generation/1-parse_AM_data.py)                         | Split `aa_substitutions` and `hg38` tables into per-UniProt files                                             |
-| gnomAD            | [2-gnomad_1_file.py](../src/1-data_generation/2-gnomad_1_file.py)                         | Extract overall and category frequencies from a compatible gnomAD Hail table using the hg38 ranges            |
-| Merge             | [3-missense_gnomXmiss_1_file.py](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | Merge AlphaMissense and gnomAD records, run VEP with ClinVar annotations, and filter/format the merged tables |
-| Package           | [tar_amissenseXgnome.sh](../src/1-data_generation/server_wrappers/tar_amissenseXgnome.sh) | Package per-protein TSVs into archives and generate the UniProt lookup table                                  |
+1. Create the environments from the three YAML files in `requirements/`.
+2. Use `operator` for download, preparation, parsing, and merging.
+3. Use `hail` for gnomAD extraction; install or obtain Hail and its Java/Spark runtime.
+4. Use `pymut-env` for structure mapping; clone/install pyMUT.
+5. Edit both `__config.sh` files with your paths, cache locations, ClinVar/VEP files, Conda initialization, and Slurm settings.
 
-The separate [PyMOL helpers](../src/3-pymol/) color mapped structures.
+| Step | Slurm/Bash wrapper | Python script | Environment and purpose |
+| --- | --- | --- | --- |
+| Fetch | [`_0-fetch.sh`](../src/1-data_generation/server_wrappers/_0-fetch.sh) | [`0-fetch_AM.py`](../src/1-data_generation/0-fetch_AM.py) | `operator`; download and prepare AlphaMissense |
+| Parse | [`_1-parse_AM_data.sh`](../src/1-data_generation/server_wrappers/_1-parse_AM_data.sh) | [`1-parse_AM_data.py`](../src/1-data_generation/1-parse_AM_data.py) | `operator`; create per-UniProt tables |
+| gnomAD | [`_2-gnomad-batch.sh`](../src/1-data_generation/server_wrappers/_2-gnomad-batch.sh) | [`2-gnomad_1_file.py`](../src/1-data_generation/2-gnomad_1_file.py) | `hail`; extract overall and category frequencies |
+| Merge | [`_3-gnomXmiss_sbatch.sh`](../src/1-data_generation/server_wrappers/_3-gnomXmiss_sbatch.sh) | [`3-missense_gnomXmiss_1_file.py`](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | `operator` plus VEP/ClinVar; merge and annotate |
+| Package | [`tar_amissenseXgnome.sh`](../src/1-data_generation/server_wrappers/tar_amissenseXgnome.sh) | - | package completed per-protein outputs |
 
-### 1. Download and prepare the raw tables
-
-From the repository root, submit the fetch job on a cluster that can reach Zenodo:
+From `src/1-data_generation/server_wrappers/`, submit each stage after the previous one completes:
 
 ```bash
-cd src/1-data_generation/server_wrappers
-mkdir -p ../../../log ../../../log/gnomad ../../../log/gnomXmiss
 sbatch ./_0-fetch.sh
-```
-
-The fetch job downloads the two required AlphaMissense files, activates the `operator` environment, decompresses them, removes the first three introductory lines, and writes the prepared tables to `data/1-raw/missense_db/`. Existing prepared files are reused. Complete `.gz` files staged there are prepared without downloading them again. Slurm writes job output to `log/`, and the wrapper also saves a timestamped log there. Wait for this job to finish before submitting parsing.
-
-### 2. Submit parsing to Slurm
-
-After the two raw TSV files are present, run:
-
-```bash
 sbatch ./_1-parse_AM_data.sh
-```
-
-The parsing job checks that the raw tables exist and writes Slurm logs to the repository's `log/` directory. The job writes per-protein tables to `data/2-processed/missense_jul/aa_substitutions/` and `data/2-processed/missense_jul/hg38/`, then prints the number of files written for each table and the total.
-
-After both `.gz` files have been downloaded, the preparation and parsing Python scripts can also be run directly in the `operator` environment from this wrapper directory:
-
-```bash
-python ../0-fetch_AM.py ../../..
-python ../1-parse_AM_data.py ../../..
-```
-
-Set `ALPHAMISSENSE_RECORD_ID` before submitting the fetch wrapper to select a different Zenodo record. The preparation Python script accepts an optional raw-data directory as its second positional argument; the parser accepts `--missense-dir` and repeatable `--tsv` options. Relative paths resolve against the project root supplied to each Python script. The preparation script processes downloaded files; it does not download them.
-
-The gnomAD extraction and merging stages require a compatible gnomAD Hail table, Hail with Java/Spark, an Ensembl VEP Singularity container and cache, and a ClinVar VCF. Set their locations in `src/1-data_generation/server_wrappers/__config.sh`; the current wrappers target the gnomAD joint v4.1 sites table.
-
-### 3. Run the gnomAD and merge arrays
-
-From the same wrapper directory, submit each stage after the previous stage and its array tasks finish:
-
-```bash
 sbatch ./_2-gnomad-batch.sh
-# Wait for its gnomAD array tasks to finish.
 sbatch ./_3-gnomXmiss_sbatch.sh
-# Wait for its merge array tasks to finish.
 bash ./tar_amissenseXgnome.sh
 ```
 
-The gnomAD and merge launchers each create a job list and submit a Slurm array. The archive script packages the completed merge outputs.
+The gnomAD and merge stages also require a compatible Hail table, VEP Singularity image/cache, and ClinVar VCF. Set these locations in `src/1-data_generation/server_wrappers/__config.sh`; adapt Slurm partition, QoS, and resource settings for your cluster. The mapping wrappers use `src/2-map_2_structure/server_wrappers/__config.sh` and the `pymut-env` environment.
 
-Data-generation shell scripts and `__config.sh` are in `src/1-data_generation/server_wrappers/`; the Python scripts and array ID lists are in `src/1-data_generation/`. Set external locations in each group's `__config.sh`, then adapt Slurm partition, QoS, and resources for your cluster. Submit jobs with `sbatch` from the wrapper directory. The `amissense_check.sh`, `output_counts.sh`, and `output_empties.sh` scripts check local data; their reports and categorized TSV copies are written under `log/`. The `rosetta_*_old.py` files are legacy implementations; the pyMUT scripts are the current mapping workflow.
-
-Record the source releases, genome build, VEP/cache version, ClinVar date, filtering choices, package versions, and checksums with any regenerated dataset.
+The Python scripts can be run directly for local testing after their input files and environments are ready. Record source releases, genome build, VEP/cache version, ClinVar date, package versions, and checksums for regenerated data.
