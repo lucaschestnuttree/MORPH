@@ -48,18 +48,12 @@ Submit wrappers with `sbatch` from the matching `server_wrappers` directory. The
 
 ## Input requirements
 
-The gnomAD workflows expect:
+The mapping workflow expects:
 
 - A per-protein merged TSV, normally named `<UniProt>_amissenseXgnomAD.tsv`. Output names are derived from the input TSV filename.
 - The target protein in **chain A** of a PDB, with its sequence corresponding to the selected UniProt reference.
 - **PDB residue numbers matching the one-based UniProt positions** used in `protein_variant`. A truncated protein can be used only when the remaining residues retain their canonical numbering. Automatic offset correction is not implemented.
 - Continuous residues for pyMUT side-chain construction. Insertion codes are skipped by the mapping scripts' residue maps; normalize inputs explicitly before use.
-
-The overall-frequency script requires `protein_variant`, `am_class`, `allele_count`, and `allele_frequency`. Category mapping also requires `uniprot_id`, and frequency columns named `<category>_allele_frequency`. It accepts `allele_frequency` as a category for the overall-frequency column. An absent `intron` column is created internally.
-
-The notebook additionally validates that the UniProt entry is reviewed and human, that prepared data exists, and that every chain A CA residue has the matching amino acid at the same UniProt position. A truncated PDB must retain its canonical residue numbers; a fragment renumbered from 1 is rejected. A fragment whose sequence occurs more than once in UniProt is also rejected because its numbering cannot be verified from sequence alone.
-
-The command-line gnomAD mappers check the reference amino acids at retained variant positions and fail on mismatches or no overlap. They cannot verify positions absent from the TSV, so validate the full chain against UniProt before command-line use.
 
 ## Map prepared data to a structure
 
@@ -92,26 +86,19 @@ For each category, the script selects the most frequent retained substitution at
 
 The extraction pipeline includes `nfe`, `fin`, `mid`, `remaining`, `ami`, `asj`, `afr`, `eas`, `sas`, `amr`, `XX`, and `XY` frequency columns. `XX` and `XY` are sex categories. Availability depends on the input table; an unavailable category currently produces a warning and is skipped during frequency calculation.
 
-### Mean AlphaMissense score per residue
-
-```bash
-mkdir -p data/2-processed/morph_outputs/am
-python src/2-map_2_structure/all_aa_AM_2_structure.py \
-  data/2-processed/missense_jul/aa_substitutions/P10635_aa_substitutions.tsv \
-  data/2-processed/pdb/P10635.pdb \
-  data/2-processed/morph_outputs/am/P10635_AM.pdb
-```
-
-This mapper requires `protein_variant` and `am_pathogenicity` columns. It averages the supplied rows at each position, rounds to two decimal places, and writes that value to matching ATOM records.
-
-It currently matches residue numbers across **all protein chains**, rather than restricting annotations to chain A. Use an input containing only the intended target protein, or explicitly prepare the chains you intend to annotate. Unscored residues retain their input B-factors, so a generic color scale can mix original values with mapped scores.
-
 ## View in PyMOL
 
-From a PyMOL session whose working directory is the repository root:
+Install the local helper scripts before running these commands. In PyMOL, open **Plugin > Plugin Manager > Install Plugin > Install from local file**, then select `M:\missense_structure_view\src\3-pymol\color_gnom.py`. If you will view AlphaMissense scores, install `color_am.py` the same way. Restart PyMOL if requested.
+
+After installation, start a PyMOL session with its working directory set to the repository root. If the commands are not available after installation, load the helper explicitly with `run`:
 
 ```pymol
 run src/3-pymol/color_gnom.py
+```
+
+For an overall-frequency structure:
+
+```pymol
 load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, morph_af_model
 morph_af sel=morph_af_model
 ```
@@ -225,5 +212,3 @@ The gnomAD and merge launchers each create a job list and submit a Slurm array. 
 Data-generation shell scripts and `__config.sh` are in `src/1-data_generation/server_wrappers/`; the Python scripts and array ID lists are in `src/1-data_generation/`. Set external locations in each group's `__config.sh`, then adapt Slurm partition, QoS, and resources for your cluster. Submit jobs with `sbatch` from the wrapper directory. The `amissense_check.sh`, `output_counts.sh`, and `output_empties.sh` scripts check local data; their reports and categorized TSV copies are written under `log/`. The `rosetta_*_old.py` files are legacy implementations; the pyMUT scripts are the current mapping workflow.
 
 Record the source releases, genome build, VEP/cache version, ClinVar date, filtering choices, package versions, and checksums with any regenerated dataset.
-
-
