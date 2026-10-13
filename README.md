@@ -12,10 +12,10 @@ The Python and shell scripts support advanced users who want to rebuild the unde
 
 ## What you can explore
 
+- **An optional structure prediction:** the notebook includes a Boltz-2 workflow when you need to generate an input structure.
 - **Population variation in structural context:** map gnomAD missense allele frequencies onto a reference protein and explore where observed missense variants occur in 3D.
 - **Differences across ancestry groups:** build category-specific views using the frequency columns available in the prepared data.
 - **Alternative side chains:** Inspect alternative amino-acid side chains alongside the reference structure at a glance in PyMOL using pyMUT-generated chains.
-- **An optional structure prediction:** the notebook includes a Boltz-2 workflow when you need to generate an input structure.
 
 ## Choose your workflow
 
