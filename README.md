@@ -29,7 +29,7 @@ The Python and shell scripts support advanced users who want to rebuild the unde
 
 ## Start with the notebook
 
-The workflow is split into three notebooks: [1-Boltz2.ipynb](1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](3-pymol.ipynb) walks through visualization in PyMOL. The original combined notebook remains available as `MORPH_complete.ipynb`.
+The workflow is split into three notebooks: [1-Boltz2.ipynb](1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](3-pymol.ipynb) walks through visualization in PyMOL.
 
 ### The intended workflow
 
@@ -54,9 +54,8 @@ The workflow is split into three notebooks: [1-Boltz2.ipynb](1-Boltz2.ipynb) gen
 | -------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
 | Overall gnomAD frequency   | `<UniProt>_AF_gnomad.pdb`       | Frequency bins on the reference chain, with up to three ranked variant chains (`V`, `W`, `X`)   |
 | Selected gnomAD categories | `<UniProt>_category_gnomad.pdb` | One variant chain per selected category; chain/category assignments are recorded in PDB remarks |
-| AlphaMissense              | User-named PDB                  | Mean AlphaMissense score per residue, calculated from the supplied variant table                |
 
-The mapped PDB **B-factor field stores visualization values**. For gnomAD outputs these are frequency bins; for AlphaMissense outputs they are mean scores. Keep the original structure if you need its original B-factors or model-confidence values.
+The mapped PDB **B-factor field stores visualization values**. For gnomAD outputs these are frequency bins. Keep the original structure if you need its original B-factors or model-confidence values.
 
 Variant chains combine substitutions across positions to help display alternative side chains. They are visualization constructs, rather than experimentally determined mutant proteins or observed haplotypes. A position without retained frequency data should not be interpreted as proof that variation is absent.
 
