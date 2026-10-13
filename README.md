@@ -14,15 +14,15 @@ The workflow is split into three notebooks:
 
 Generate an input structure:
 
-- [1-Boltz2.ipynb](1-Boltz2.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb)
+- 1-Boltz2.ipynb [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb)
 
 Validate and map variations
 
-- [2-MORPH.ipynb](2-MORPH.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb)
+- 2-MORPH.ipynb · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb)
 
 Walk through of PyMOL visualization.
 
-- [3-pymol.ipynb](3-pymol.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb)
+- 3-pymol.ipynb· [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb)
 
 ### The intended workflow
 
@@ -41,13 +41,13 @@ Walk through of PyMOL visualization.
 
 ## Choose your workflow
 
-| Your goal                                          | Where to start                                                                  | Experience needed                                          |
-| -------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Generate a structure                               | [1-Boltz2.ipynb](1-Boltz2.ipynb)                                                | Google Colab GPU runtime                                   |
-| Map prepared variation onto a structure            | [2-MORPH.ipynb](2-MORPH.ipynb)                                                  | Google Colab CPU runtime                                   |
-| Explore mapped structures                          | [3-pymol.ipynb](3-pymol.ipynb)                                                  | PyMOL                                                      |
-| Map prepared variant data onto your own structures | [Advanced usage guide](docs/advanced-usage.md#map-prepared-data-to-a-structure) | Python, command line, and environment setup                |
-| Rebuild or extend the prepared datasets            | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data)    | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
+| Your goal                                 | Where to start                                                               | Experience needed                                          |
+| ----------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Generate a structure                      | [1-Boltz2.ipynb](1-Boltz2.ipynb)                                             | Google Colab GPU runtime                                   |
+| Map prepared variation onto a structure   | [2-MORPH.ipynb](2-MORPH.ipynb)                                               | Google Colab CPU runtime                                   |
+| Explore mapped structures                 | [3-pymol.ipynb](3-pymol.ipynb)                                               | PyMOL                                                      |
+| Map prepared variant data on your machine | [Advanced usage guide](docs/advanced-usage.md)                               | Python, command line, and environment setup                |
+| Rebuild or extend the prepared datasets   | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data) | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
 
 ## Prepared data
 
