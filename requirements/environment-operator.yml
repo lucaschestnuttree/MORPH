@@ -2,8 +2,6 @@ name: operator
 channels:
   - conda-forge
   - bioconda
-  - https://repo.anaconda.com/pkgs/main
-  - https://repo.anaconda.com/pkgs/r
 dependencies:
   - pip
   - python=3.10
@@ -21,4 +19,3 @@ dependencies:
   - conda-forge::adjusttext
   - bioconda::biolib
   - conda-forge::scikit-learn
-prefix: /pasteur/appa/homes/lchataig/miniconda3/envs/operator

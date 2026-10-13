@@ -2,10 +2,7 @@ name: hail
 channels:
   - conda-forge
   - bioconda
-  - https://repo.anaconda.com/pkgs/main
-  - https://repo.anaconda.com/pkgs/r
 dependencies:
   - python=3.10
   - openjdk=11
   - pip
-prefix: /pasteur/appa/homes/lchataig/miniconda3/envs/hail

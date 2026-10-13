@@ -2,21 +2,23 @@
 
 [Back to the project overview](../README.md)
 
-Use these workflows to map prepared data onto structures or rebuild the datasets. The guided notebooks are [1-Boltz2.ipynb](../1-Boltz2.ipynb), [2-MORPH.ipynb](../2-MORPH.ipynb), and [3-pymol.ipynb](../3-pymol.ipynb).
+This documentation is intended to share workflows to rebuild datasets or map prepared data onto structures using your local server and/or machine.
 
-Examples below use Bash from the repository root. Replace example paths with your own files. Prepared data are available from the public [Zenodo record 18163874](https://zenodo.org/records/18163874).
+Examples below use Bash from the repository root. Replace example paths with your own files.
+
+Prepared data are available from the public [Zenodo record 18163874](https://zenodo.org/records/18163874).
 
 ## Environment setup
 
-The repository contains paired Conda and pip requirement files for three workflow stages:
+The repository contains paired Conda YAML definitions and Conda package exports for three workflow stages:
 
-| Environment | Role | Conda YAML | Pip requirements |
-| --- | --- | --- | --- |
-| `operator` | Download, parse, and annotate data | [environment-operator.yml](../requirements/environment-operator.yml) | [requirements-operator.txt](../requirements/requirements-operator.txt) |
-| `hail` | Query gnomAD with Hail | [environment-hail.yml](../requirements/environment-hail.yml) | [requirements-hail.txt](../requirements/requirements-hail.txt) |
-| `pymut-env` | Map scores and build alternative side chains | [environment-pymut.yml](../requirements/environment-pymut.yml) | [requirements-pymut.txt](../requirements/requirements-pymut.txt) |
+| Environment | Role                                         | Conda YAML                                                           | Conda package export                                                   |
+| ----------- | -------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `operator`  | Download, parse, and annotate data           | [environment-operator.yml](../requirements/environment-operator.yml) | [requirements-operator.txt](../requirements/requirements-operator.txt) |
+| `hail`      | Query gnomAD with Hail                       | [environment-hail.yml](../requirements/environment-hail.yml)         | [requirements-hail.txt](../requirements/requirements-hail.txt)         |
+| `pymut-env` | Map scores and build alternative side chains | [environment-pymut.yml](../requirements/environment-pymut.yml)       | [requirements-pymut.txt](../requirements/requirements-pymut.txt)       |
 
-These are development snapshots, not portable lockfiles. Adapt machine-specific `prefix:` entries and local package paths before creating environments. Hail and pyMUT must be obtained separately as needed: install Hail in the Hail environment and clone/install [pyMUT](https://github.com/gerdos/pyMUT) before running the mapping scripts. A minimal mapping environment is:
+The YAML files are development definitions and still contain machine-specific `prefix:` entries; remove or adapt those before creating environments elsewhere. The `.txt` files are Conda exports with pinned package versions, including Hail in `requirements-hail.txt`; they are most useful for rebuilding on a similar Linux system, not as portable pip input. pyMUT is external to these files, so clone/install [pyMUT](https://github.com/gerdos/pyMUT) before running the mapping scripts. A minimal mapping environment is:
 
 ```bash
 conda create -n morph-mapping -c conda-forge python=3.10 "numpy<2" pandas biopython
@@ -133,18 +135,18 @@ The commands select and color different frequency ranges by default. `morph_af s
 
 The gnomAD mapping scripts store the following integer bins in the PDB B-factor field:
 
-| Bin | Allele-frequency interval |
-| --- | --- |
-| 0 | `[1e-9, 1e-8)` |
-| 1 | `[1e-8, 1e-7)` |
-| 2 | `[1e-7, 1e-6)` |
-| 3 | `[1e-6, 1e-5)` |
-| 4 | `[1e-5, 1e-4)` |
-| 5 | `[1e-4, 1e-3)` |
-| 6 | `[1e-3, 1e-2)` |
-| 7 | `[1e-2, 0.51)` |
-| 8 | `[0.51, 1.0)` |
-| 42 | No retained frequency annotation at this position |
+| Bin | Allele-frequency interval                         |
+| --- | ------------------------------------------------- |
+| 0   | `[1e-9, 1e-8)`                                    |
+| 1   | `[1e-8, 1e-7)`                                    |
+| 2   | `[1e-7, 1e-6)`                                    |
+| 3   | `[1e-6, 1e-5)`                                    |
+| 4   | `[1e-5, 1e-4)`                                    |
+| 5   | `[1e-4, 1e-3)`                                    |
+| 6   | `[1e-3, 1e-2)`                                    |
+| 7   | `[1e-2, 0.51)`                                    |
+| 8   | `[0.51, 1.0)`                                     |
+| 42  | No retained frequency annotation at this position |
 
 The upper endpoint is exclusive in the current implementation. **Known boundary issue:** a frequency of exactly `1.0` falls through to bin 0. Values outside the defined intervals also fall through to bin 0. Verify such entries in the source TSV before interpreting them.
 
@@ -154,14 +156,14 @@ The variant chains are composite visualization constructs. Their side chains are
 
 The data-generation scripts cover these steps:
 
-| Step | Script | Purpose |
-| --- | --- | --- |
-| Fetch | [_0-fetch.sh](../src/1-data_generation/server_wrappers/_0-fetch.sh) | Download the two AlphaMissense tables |
-| Fetch preparation | [0-fetch_AM.py](../src/1-data_generation/0-fetch_AM.py) | Decompress and prepare the downloaded tables |
-| Parse | [1-parse_AM_data.py](../src/1-data_generation/1-parse_AM_data.py) | Split `aa_substitutions` and `hg38` tables into per-UniProt files |
-| gnomAD | [2-gnomad_1_file.py](../src/1-data_generation/2-gnomad_1_file.py) | Extract overall and category frequencies from a compatible gnomAD Hail table using the hg38 ranges |
-| Merge | [3-missense_gnomXmiss_1_file.py](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | Merge AlphaMissense and gnomAD records, run VEP with ClinVar annotations, and filter/format the merged tables |
-| Package | [tar_amissenseXgnome.sh](../src/1-data_generation/server_wrappers/tar_amissenseXgnome.sh) | Package per-protein TSVs into archives and generate the UniProt lookup table |
+| Step              | Script                                                                                    | Purpose                                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Fetch             | [\_0-fetch.sh](../src/1-data_generation/server_wrappers/_0-fetch.sh)                      | Download the two AlphaMissense tables                                                                         |
+| Fetch preparation | [0-fetch_AM.py](../src/1-data_generation/0-fetch_AM.py)                                   | Decompress and prepare the downloaded tables                                                                  |
+| Parse             | [1-parse_AM_data.py](../src/1-data_generation/1-parse_AM_data.py)                         | Split `aa_substitutions` and `hg38` tables into per-UniProt files                                             |
+| gnomAD            | [2-gnomad_1_file.py](../src/1-data_generation/2-gnomad_1_file.py)                         | Extract overall and category frequencies from a compatible gnomAD Hail table using the hg38 ranges            |
+| Merge             | [3-missense_gnomXmiss_1_file.py](../src/1-data_generation/3-missense_gnomXmiss_1_file.py) | Merge AlphaMissense and gnomAD records, run VEP with ClinVar annotations, and filter/format the merged tables |
+| Package           | [tar_amissenseXgnome.sh](../src/1-data_generation/server_wrappers/tar_amissenseXgnome.sh) | Package per-protein TSVs into archives and generate the UniProt lookup table                                  |
 
 The separate [PyMOL helpers](../src/3-pymol/) color mapped structures.
 
@@ -215,3 +217,4 @@ The gnomAD and merge launchers each create a job list and submit a Slurm array. 
 Data-generation shell scripts and `__config.sh` are in `src/1-data_generation/server_wrappers/`; the Python scripts and array ID lists are in `src/1-data_generation/`. Set external locations in each group's `__config.sh`, then adapt Slurm partition, QoS, and resources for your cluster. Submit jobs with `sbatch` from the wrapper directory. The `amissense_check.sh`, `output_counts.sh`, and `output_empties.sh` scripts check local data; their reports and categorized TSV copies are written under `log/`. The `rosetta_*_old.py` files are legacy implementations; the pyMUT scripts are the current mapping workflow.
 
 Record the source releases, genome build, VEP/cache version, ClinVar date, filtering choices, package versions, and checksums with any regenerated dataset.
+
