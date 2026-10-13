@@ -60,6 +60,8 @@ The mapping workflow expects:
 ### Overall allele frequency
 
 ```bash
+conda activate pymut-env
+
 python src/2-map_2_structure/pymut_gnomad_af_2_structure.py \
   data/2-processed/amissenseXgnomAD/P10635_amissenseXgnomAD.tsv \
   data/2-processed/pdb/P10635.pdb \
@@ -73,6 +75,8 @@ The script ranks up to three retained variant rows by overall frequency at each 
 ### Category-specific frequency
 
 ```bash
+conda activate pymut-env
+
 python src/2-map_2_structure/pymut_gnomad_anc_2_structure.py \
   data/2-processed/amissenseXgnomAD/P10635_amissenseXgnomAD.tsv \
   data/2-processed/pdb/P10635.pdb \
@@ -88,43 +92,39 @@ The extraction pipeline includes `nfe`, `fin`, `mid`, `remaining`, `ami`, `asj`,
 
 ## View in PyMOL
 
-Install the local helper scripts before running these commands. In PyMOL, open **Plugin > Plugin Manager > Install Plugin > Install from local file**, then select `M:\missense_structure_view\src\3-pymol\color_gnom.py`. If you will view AlphaMissense scores, install `color_am.py` the same way. Restart PyMOL if requested.
+Install the local helper scripts before running these commands. In PyMOL, open **Plugin > Plugin Manager > Install Plugin > Install from local file**, then select `MORPH\src\3-pymol\color_gnom.py`. Restart PyMOL.
 
-After installation, start a PyMOL session with its working directory set to the repository root. If the commands are not available after installation, load the helper explicitly with `run`:
-
-```pymol
-run src/3-pymol/color_gnom.py
-```
+After installation, start a PyMOL session.
 
 For an overall-frequency structure:
 
 ```pymol
-load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, morph_af_model
-morph_af sel=morph_af_model
+load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, P10635_AF
+morph_af sel=P10635_AF
+```
+
+or with a broader threshold:
+
+```pymol
+load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, P10635_AF
+morph_af sel=P10635_AF, 1
 ```
 
 For a category-mapped file:
 
 ```pymol
-load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, morph_category_model
-morph_anc sel=morph_category_model
+load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, P10635_cat
+morph_anc sel=P10635_cat
 ```
 
-To create selections for the reference residue and alternative side chains at one position:
+or with a broader threshold:
 
 ```pymol
-pos_var sel=morph_af_model, 123
+load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, P10635_cat
+morph_anc sel=P10635_cat, 1
 ```
 
-For an AlphaMissense-mapped file:
-
-```pymol
-run src/3-pymol/color_am.py
-load data/2-processed/morph_outputs/am/P10635_AM.pdb, morph_am_model
-coloram sel=morph_am_model
-```
-
-The commands select and color different frequency ranges by default. `morph_af sel=morph_af_model, 1` broadens the highlighted range to include bin 4; `morph_anc sel=morph_category_model, 1` includes bin 5. See [color_gnom.py](../src/3-pymol/color_gnom.py) for the display settings.
+The threshold controls which variant and side-chain residues are selected by their integer B-factor bins. For `morph_af`, the default threshold selects bins 5�8 (the helper comment labels this approximately `[1e-4, 1.0]`); threshold `1` expands this to bins 4�8 (approximately `[1e-5, 1.0]`). For `morph_anc`, the default selects bins 6�8 (approximately `[1e-3, 1.0]`); threshold `1` expands this to bins 5�8 (approximately `[1e-4, 1.0]`). Chain A is still colored across all bins. See [color_gnom.py](../src/3-pymol/color_gnom.py) for the display settings.
 
 ## Understand the annotations
 
@@ -140,10 +140,8 @@ The gnomAD mapping scripts store the following integer bins in the PDB B-factor 
 | 5   | `[1e-4, 1e-3)`                                    |
 | 6   | `[1e-3, 1e-2)`                                    |
 | 7   | `[1e-2, 0.51)`                                    |
-| 8   | `[0.51, 1.0)`                                     |
+| 8   | `[0.51, 1.0]`                                     |
 | 42  | No retained frequency annotation at this position |
-
-The upper endpoint is exclusive in the current implementation. **Known boundary issue:** a frequency of exactly `1.0` falls through to bin 0. Values outside the defined intervals also fall through to bin 0. Verify such entries in the source TSV before interpreting them.
 
 The variant chains are composite visualization constructs. Their side chains are generated using pyMUT rotamers, with a fallback for detected clashes within the same chain. They do not represent validated mutant structures, observed haplotypes, or a full assessment of contacts with other chains or ligands.
 
