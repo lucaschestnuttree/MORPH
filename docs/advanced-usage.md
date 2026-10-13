@@ -124,24 +124,32 @@ load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, P1063
 morph_anc sel=P10635_cat, 1
 ```
 
-The threshold controls which variant and side-chain residues are selected by their integer B-factor bins. For `morph_af`, the default threshold selects bins 5�8 (the helper comment labels this approximately `[1e-4, 1.0]`); threshold `1` expands this to bins 4�8 (approximately `[1e-5, 1.0]`). For `morph_anc`, the default selects bins 6�8 (approximately `[1e-3, 1.0]`); threshold `1` expands this to bins 5�8 (approximately `[1e-4, 1.0]`). Chain A is still colored across all bins. See [color_gnom.py](../src/3-pymol/color_gnom.py) for the display settings.
+The threshold controls which variant and side-chain residues are selected by their integer B-factor bins.
+
+For `morph_af`, the default threshold selects bins 5 to 8 `[1e-4, 1.0]`; threshold `1` expands this to bins 4 to 8 `[1e-5, 1.0]`. Here each bin has a distinct color as seen in table below.
+
+For `morph_anc`, the default selects bins 6 to 8 (approximately `[1e-3, 1.0]`); threshold `1` expands this to bins 5 to 8 (approximately `[1e-4, 1.0]`). Chain A is still colored across all bins. See [color_gnom.py](../src/3-pymol/color_gnom.py) for the display settings.
 
 ## Understand the annotations
 
-The gnomAD mapping scripts store the following integer bins in the PDB B-factor field:
+The mapping scripts store integer frequency bins in the PDB B-factor field. Both `morph_af` and `morph_anc` use the same bin definitions; their threshold settings select different subsets of those bins:
 
-| Bin | Allele-frequency interval                         |
-| --- | ------------------------------------------------- |
-| 0   | `[1e-9, 1e-8)`                                    |
-| 1   | `[1e-8, 1e-7)`                                    |
-| 2   | `[1e-7, 1e-6)`                                    |
-| 3   | `[1e-6, 1e-5)`                                    |
-| 4   | `[1e-5, 1e-4)`                                    |
-| 5   | `[1e-4, 1e-3)`                                    |
-| 6   | `[1e-3, 1e-2)`                                    |
-| 7   | `[1e-2, 0.51)`                                    |
-| 8   | `[0.51, 1.0]`                                     |
-| 42  | No retained frequency annotation at this position |
+| Bin | Allele-frequency interval        | `morph_af` color                           | `morph_anc` use                               |
+| --- | -------------------------------- | ------------------------------------------ | --------------------------------------------- |
+| 0   | `[1e-9, 1e-8)`                   | light grey                                 | not bin-colored                               |
+| 1   | `[1e-8, 1e-7)`                   | grey                                       | not bin-colored                               |
+| 2   | `[1e-7, 1e-6)`                   | darker grey                                | not bin-colored                               |
+| 3   | `[1e-6, 1e-5)`                   | dark grey                                  | not bin-colored                               |
+| 4   | `[1e-5, 1e-4)`                   | light red at threshold `1`; otherwise grey | not bin-colored                               |
+| 5   | `[1e-4, 1e-3)`                   | red                                        | lighter category-chain color at threshold `1` |
+| 6   | `[1e-3, 1e-2)`                   | dark red                                   | category-chain color                          |
+| 7   | `[1e-2, 0.51)`                   | blue                                       | category-chain color                          |
+| 8   | `[0.51, 1.0)`                    | purple                                     | category-chain color                          |
+| 42  | No retained frequency annotation | pale yellow                                | not bin-colored                               |
+
+For `morph_anc`, category chains use a fixed palette: `T` yellow, `U` orange, `V` red, `W` violet, `X` blue, `Y` sky blue, and `Z` green. Pale versions are used for the narrower secondary range. Chain A is light grey, and non-protein cofactors are green.
+
+The mapper comparisons use a lower-inclusive and upper-exclusive interval (`lo <= frequency < hi`). Therefore, exactly `1.0` falls through to bin 0. The `1.0` endpoint shown in some helper comments is shorthand; the implemented bin interval is `[0.51, 1.0)`.
 
 The variant chains are composite visualization constructs. Their side chains are generated using pyMUT rotamers, with a fallback for detected clashes within the same chain. They do not represent validated mutant structures, observed haplotypes, or a full assessment of contacts with other chains or ligands.
 
