@@ -8,7 +8,29 @@ The **guided notebook(s) are the intended starting point for those who want to r
 
 The Python and shell scripts support users who want to run jobs on their machines, rebuild the underlying datasets, or do proteome level analyses.
 
-> **Release status:** The three workflow notebooks are available at the repository root, and the prepared dataset is publicly available on [Zenodo](https://zenodo.org/records/18163874).
+## Start with the notebook(s)
+
+The workflow is split into three notebooks:
+
+Generate an input structure:
+
+- [1-Boltz2.ipynb](1-Boltz2.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb)
+
+Validate and map variations
+
+- [2-MORPH.ipynb](2-MORPH.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb)
+
+Walk through of PyMOL visualization.
+
+- [3-pymol.ipynb](3-pymol.ipynb) · [Open in Colab](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb)
+
+### The intended workflow
+
+1. **Choose your protein.** Enter its UniProt accession and validate the reviewed human entry.
+2. **Provide a structure.** Upload a suitable PDB, or generate and download one through `1-Boltz2.ipynb`.
+3. **Retrieve prepared data.** The notebook uses a UniProt lookup table to select the relevant Zenodo archive.
+4. **Choose a mapping mode.** Use overall allele frequency or select genetic ancestry categories.
+5. **Download and explore.** Export the annotated PDB and follow `3-pymol.ipynb` or the [visualization helpers](docs/advanced-usage.md#view-in-pymol).
 
 ## What you can explore
 
@@ -26,18 +48,6 @@ The Python and shell scripts support users who want to run jobs on their machine
 | Explore mapped structures                          | [3-pymol.ipynb](3-pymol.ipynb)                                                  | PyMOL                                                      |
 | Map prepared variant data onto your own structures | [Advanced usage guide](docs/advanced-usage.md#map-prepared-data-to-a-structure) | Python, command line, and environment setup                |
 | Rebuild or extend the prepared datasets            | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data)    | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
-
-## Start with the notebook
-
-The workflow is split into three notebooks: [1-Boltz2.ipynb](1-Boltz2.ipynb) generates an optional input structure, [2-MORPH.ipynb](2-MORPH.ipynb) validates and maps variation, and [3-pymol.ipynb](3-pymol.ipynb) walks through visualization in PyMOL.
-
-### The intended workflow
-
-1. **Choose your protein.** Enter its UniProt accession and validate the reviewed human entry.
-2. **Provide a structure.** Upload a suitable PDB, or generate and download one through `1-Boltz2.ipynb`.
-3. **Retrieve prepared data.** The notebook uses a UniProt lookup table to select the relevant Zenodo archive.
-4. **Choose a mapping mode.** Use overall allele frequency or select genetic ancestry categories.
-5. **Download and explore.** Export the annotated PDB and follow `3-pymol.ipynb` or the [visualization helpers](docs/advanced-usage.md#view-in-pymol).
 
 ## Prepared data
 
