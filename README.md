@@ -4,9 +4,9 @@
 
 MORPH (_Missense on Reference Protein Human_) connects gnomAD population frequencies and human protein structure predictions.
 
-The **guided notebook(s) are the intended starting point for researchers who want to reproduce visuals for their protein of interest**.
+The **guided notebook(s) are the intended starting point for those who want to reproduce visuals for their protein of interest with little code knowledge**.
 
-The Python and shell scripts support advanced users who want to rebuild the underlying datasets or do proteome level analyses.
+The Python and shell scripts support users who want to run jobs on their machines, rebuild the underlying datasets, or do proteome level analyses.
 
 > **Release status:** The three workflow notebooks are available at the repository root, and the prepared dataset is publicly available on [Zenodo](https://zenodo.org/records/18163874).
 
