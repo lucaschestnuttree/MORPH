@@ -2,38 +2,39 @@
 
 [Back to the project overview](../README.md)
 
-Use these workflows to map prepared data onto structures or to rebuild the datasets. The guided notebook is the intended entry point for users who prefer a step-by-step interface.
+Use these workflows to map prepared data onto structures or rebuild the datasets. The guided notebooks are [1-Boltz2.ipynb](../1-Boltz2.ipynb), [2-MORPH.ipynb](../2-MORPH.ipynb), and [3-pymol.ipynb](../3-pymol.ipynb).
 
-Examples below use Bash and run from the repository root. Replace the example paths with your own files. The public prepared-data release is pending, so the mapping commands currently require locally available per-protein TSVs.
+Examples below use Bash from the repository root. Replace example paths with your own files. Prepared data are available from the public [Zenodo record 18163874](https://zenodo.org/records/18163874).
 
 ## Environment setup
 
-The repository contains three development environment definitions:
+The repository contains paired Conda and pip requirement files for three workflow stages:
 
-| Environment | Intended role | Definition |
-| --- | --- | --- |
-| `operator` | Downloading, parsing, and annotating data | [environment-operator.yml](../requirements/environment-operator.yml) |
-| `hail` | Querying the gnomAD Hail table | [environment-hail.yml](../requirements/environment-hail.yml) |
-| `pymut-env` | Mapping scores and alternative side chains | [environment-pymut.yml](../requirements/environment-pymut.yml) |
+| Environment | Role | Conda YAML | Pip requirements |
+| --- | --- | --- | --- |
+| `operator` | Download, parse, and annotate data | [environment-operator.yml](../requirements/environment-operator.yml) | [requirements-operator.txt](../requirements/requirements-operator.txt) |
+| `hail` | Query gnomAD with Hail | [environment-hail.yml](../requirements/environment-hail.yml) | [requirements-hail.txt](../requirements/requirements-hail.txt) |
+| `pymut-env` | Map scores and build alternative side chains | [environment-pymut.yml](../requirements/environment-pymut.yml) | [requirements-pymut.txt](../requirements/requirements-pymut.txt) |
 
-These files are development snapshots. Each YAML currently includes a machine-specific `prefix:`; remove or adapt it before creating an environment elsewhere. The Hail YAML does not yet declare Hail itself or all Python dependencies used by the extraction script. Several `requirements-*.txt` entries point to local Conda build paths (`file:///home/conda/...`), so those exports are not portable pip installation instructions.
-
-For structure mapping, a minimal starting environment is:
+These are development snapshots, not portable lockfiles. Adapt machine-specific `prefix:` entries and local package paths before creating environments. Hail and pyMUT must be obtained separately as needed: install Hail in the Hail environment and clone/install [pyMUT](https://github.com/gerdos/pyMUT) before running the mapping scripts. A minimal mapping environment is:
 
 ```bash
 conda create -n morph-mapping -c conda-forge python=3.10 "numpy<2" pandas biopython
 conda activate morph-mapping
-```
-
-The gnomAD mapping scripts also import [pyMUT](https://github.com/gerdos/pyMUT). Clone it and make its directory importable, following its upstream library usage:
-
-```bash
 git clone https://github.com/gerdos/pyMUT.git ../pyMUT
-export PYTHONPATH="$(cd ../pyMUT && pwd)${PYTHONPATH:+:$PYTHONPATH}"
-python -c "import numpy, pandas, Bio, pymut; print('Mapping imports OK')"
+export PYTHONPATH="$(cd ../pyMUT && pwd)"
 ```
 
-This is a setup starting point, rather than a validated release environment. Record the pyMUT commit and package versions used for reproducible work. PyMOL helpers run inside PyMOL, which needs its own installation.
+PyMOL helpers require a separate PyMOL installation.
+
+## Wrapper configuration
+
+The provided SLURM/Bash wrappers are cluster-specific. Before using them, obtain Hail and pyMUT and update the configuration files for your machine:
+
+- `src/1-data_generation/server_wrappers/__config.sh`: `CONDA_SH`, `HT_PATH`, `LOG_DIR`, `VEP_SIF`, `CACHE_DIR`, and `CLINVAR_VCF`
+- `src/2-map_2_structure/server_wrappers/__config.sh`: `CONDA_SH`
+
+Submit wrappers with `sbatch` from the matching `server_wrappers` directory. The direct Python commands below do not use these configuration files.
 
 ## Input requirements
 
@@ -195,7 +196,7 @@ python ../1-parse_AM_data.py ../../..
 
 Set `ALPHAMISSENSE_RECORD_ID` before submitting the fetch wrapper to select a different Zenodo record. The preparation Python script accepts an optional raw-data directory as its second positional argument; the parser accepts `--missense-dir` and repeatable `--tsv` options. Relative paths resolve against the project root supplied to each Python script. The preparation script processes downloaded files; it does not download them.
 
-The gnomAD extraction and merging stages require a compatible gnomAD Hail table, Hail and its Java/Spark environment, an Ensembl VEP Singularity container and cache, and a ClinVar VCF. The current wrappers are configured for the gnomAD joint v4.1 sites table.
+The gnomAD extraction and merging stages require a compatible gnomAD Hail table, Hail with Java/Spark, an Ensembl VEP Singularity container and cache, and a ClinVar VCF. Set their locations in `src/1-data_generation/server_wrappers/__config.sh`; the current wrappers target the gnomAD joint v4.1 sites table.
 
 ### 3. Run the gnomAD and merge arrays
 
