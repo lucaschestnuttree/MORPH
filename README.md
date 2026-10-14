@@ -8,14 +8,6 @@ The **guided notebook(s) are the intended starting point for those who want to r
 
 The Python and shell scripts support users who want to run jobs on their machines, rebuild the underlying datasets, or do proteome level analyses.
 
-## Start with the notebook(s)
-
-1. **Boltz2.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb) - `Generate an input structure with Boltz-2`
-
-2. **MORPH.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb) - `Validate and map variations`
-
-3. **PyMOL.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-PyMOL.ipynb) - `Walk through of PyMOL visualization.`
-
 ## What you can explore
 
 - **An optional structure prediction:** includes a Boltz-2 notebook when you need to generate an input structure.
@@ -25,13 +17,13 @@ The Python and shell scripts support users who want to run jobs on their machine
 
 ## Choose your workflow
 
-| Your goal                                 | Where to start                                                               | Experience needed                                          |
-| ----------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Generate a structure                      | [1-Boltz2.ipynb](1-Boltz2.ipynb)                                             | Google Colab GPU runtime                                   |
-| Map prepared variation onto a structure   | [2-MORPH.ipynb](2-MORPH.ipynb)                                               | Google Colab CPU runtime                                   |
-| Explore mapped structures                 | [3-PyMOL.ipynb](3-PyMOL.ipynb)                                               | PyMOL                                                      |
-| Map prepared variant data on your machine | [Advanced usage guide](docs/advanced-usage.md)                               | Python, command line, and environment setup                |
-| Rebuild or extend the prepared datasets   | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data) | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
+| Your goal                                 | Where to start                                                                                                                                                                                                                                        | Experience needed                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Generate a structure with Boltz-2         | [1-Boltz2.ipynb](1-Boltz2.ipynb) [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb) — `Generate an input structure with Boltz-2` | Google Colab GPU runtime                                   |
+| Map prepared variation onto a structure   | [2-MORPH.ipynb](2-MORPH.ipynb) [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb) — `Validate and map variations`                 | Google Colab CPU runtime                                   |
+| Explore mapped structures                 | [3-PyMOL.ipynb](3-PyMOL.ipynb) [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-PyMOL.ipynb) — `Walk through of PyMOL visualization.`        | PyMOL                                                      |
+| Map prepared variant data on your machine | [Advanced usage guide](docs/advanced-usage.md)                                                                                                                                                                                                        | Python, command line, and environment setup                |
+| Rebuild or extend the prepared datasets   | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data)                                                                                                                                                                          | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
 
 ## Prepared data
 
@@ -85,27 +77,3 @@ MORPH builds on the following datasets and tools:
 - **Tamas Hegedus, hegelab.org:** author credited in the supplied AlphaMissense PyMOL coloring helper.
 
 When reporting results, cite the upstream datasets and tools used, and the public MORPH Zenodo record linked above.
-
-**Project license:** MIT. Upstream datasets and dependencies retain their own licenses and attribution requirements.
-
-## License
-
-Copyright (c) 2026 Lucas Chataigner
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
