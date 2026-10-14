@@ -14,7 +14,7 @@ The Python and shell scripts support users who want to run jobs on their machine
 
 2. **MORPH.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb) - `Validate and map variations`
 
-3. **pymol.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb) - `Walk through of PyMOL visualization.`
+3. **PyMOL.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-PyMOL.ipynb) - `Walk through of PyMOL visualization.`
 
 ## What you can explore
 
@@ -29,7 +29,7 @@ The Python and shell scripts support users who want to run jobs on their machine
 | ----------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | Generate a structure                      | [1-Boltz2.ipynb](1-Boltz2.ipynb)                                             | Google Colab GPU runtime                                   |
 | Map prepared variation onto a structure   | [2-MORPH.ipynb](2-MORPH.ipynb)                                               | Google Colab CPU runtime                                   |
-| Explore mapped structures                 | [3-pymol.ipynb](3-pymol.ipynb)                                               | PyMOL                                                      |
+| Explore mapped structures                 | [3-PyMOL.ipynb](3-PyMOL.ipynb)                                               | PyMOL                                                      |
 | Map prepared variant data on your machine | [Advanced usage guide](docs/advanced-usage.md)                               | Python, command line, and environment setup                |
 | Rebuild or extend the prepared datasets   | [Data-generation pipeline](docs/advanced-usage.md#rebuild-the-prepared-data) | Bioinformatics, Hail, Ensembl VEP, and Linux/HPC workflows |
 
@@ -64,10 +64,10 @@ requirements/                    Development environment definitions and exports
 src/
 1-Boltz2.ipynb                      Boltz-2 structure prediction notebook
 2-MORPH.ipynb                       Variation mapping notebook
-3-pymol.ipynb                       PyMOL visualization walkthrough
+3-PyMOL.ipynb                       PyMOL visualization walkthrough
    1-data_generation/             Download, harmonize, annotate, and package data
    2-map_2_structure/             Map prepared values and substitutions to PDBs
-   3-pymol/                        PyMOL coloring and selection helpers
+   3-PyMOL/                        PyMOL coloring and selection helpers
 data/                            Local raw and processed data (ignored by Git)
 log/                             Local execution logs (ignored by Git)
 ```

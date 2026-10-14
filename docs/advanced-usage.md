@@ -92,34 +92,34 @@ The extraction pipeline includes `nfe`, `fin`, `mid`, `remaining`, `ami`, `asj`,
 
 ## View in PyMOL
 
-Install the local helper scripts before running these commands. In PyMOL, open **Plugin > Plugin Manager > Install Plugin > Install from local file**, then select `MORPH\src\3-pymol\color_gnom.py`. Restart PyMOL.
+Install the local helper scripts before running these commands. In PyMOL, open **Plugin > Plugin Manager > Install Plugin > Install from local file**, then select `MORPH\src\3-PyMOL\color_gnom.py`. Restart PyMOL.
 
 After installation, start a PyMOL session.
 
 For an overall-frequency structure:
 
-```pymol
+```PyMOL
 load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, P10635_AF
 morph_af sel=P10635_AF
 ```
 
 or with a broader threshold:
 
-```pymol
+```PyMOL
 load data/2-processed/morph_outputs/af/P10635_AF_gnomad.pdb, P10635_AF
 morph_af sel=P10635_AF, 1
 ```
 
 For a category-mapped file:
 
-```pymol
+```PyMOL
 load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, P10635_cat
 morph_anc sel=P10635_cat
 ```
 
 or with a broader threshold:
 
-```pymol
+```PyMOL
 load data/2-processed/morph_outputs/categories/P10635_category_gnomad.pdb, P10635_cat
 morph_anc sel=P10635_cat, 1
 ```
@@ -128,7 +128,7 @@ The threshold controls which variant and side-chain residues are selected by the
 
 For `morph_af`, the default threshold selects bins 5 to 8 `[1e-4, 1.0]`; threshold `1` expands this to bins 4 to 8 `[1e-5, 1.0]`. Here each bin has a distinct color as seen in table below.
 
-For `morph_anc`, the default selects bins 6 to 8 (approximately `[1e-3, 1.0]`); threshold `1` expands this to bins 5 to 8 (approximately `[1e-4, 1.0]`). Chain A is still colored across all bins. See [color_gnom.py](../src/3-pymol/color_gnom.py) for the display settings.
+For `morph_anc`, the default selects bins 6 to 8 (approximately `[1e-3, 1.0]`); threshold `1` expands this to bins 5 to 8 (approximately `[1e-4, 1.0]`). Chain A is still colored across all bins. See [color_gnom.py](../src/3-PyMOL/color_gnom.py) for the display settings.
 
 ## Understand the annotations
 
