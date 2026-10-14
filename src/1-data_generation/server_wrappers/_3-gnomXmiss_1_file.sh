@@ -41,7 +41,7 @@ SCRIPT_DIR="$PWD"
 BASE_PATH="$(cd ../../.. && pwd)" || exit 1
 source ./__config.sh || exit 1
 
-GNOM_FILE="$BASE_PATH/data/2-processed/missense_jul/gnomAD_AF/P15382_gnomAD.tsv"
+GNOM_FILE="$BASE_PATH/data/2-processed/missense_jul/gnomAD_AF/P11712_gnomAD.tsv"
 OUTPUT_DIR="$BASE_PATH/data/2-processed/amissenseXgnomAD"
 
 HG38_SUBSTITUTIONS_DIR="$BASE_PATH/data/2-processed/missense_jul/hg38"
