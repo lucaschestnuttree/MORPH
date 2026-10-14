@@ -51,17 +51,19 @@ See the [advanced guide](docs/advanced-usage.md#understand-the-annotations) for 
 
 ```text
 README.md                         Project overview and notebook entry point
+LICENSE                           Project license
+1-Boltz2.ipynb                    Boltz-2 structure prediction notebook
+2-MORPH.ipynb                     Variation mapping notebook
+3-PyMOL.ipynb                     PyMOL visualization walkthrough
 docs/advanced-usage.md            Command-line workflows and annotation details
-requirements/                    Development environment definitions and exports
+requirements/                     Development environment definitions and exports
+example_pdbs/                     Example mapped PDB structures
 src/
-1-Boltz2.ipynb                      Boltz-2 structure prediction notebook
-2-MORPH.ipynb                       Variation mapping notebook
-3-PyMOL.ipynb                       PyMOL visualization walkthrough
-   1-data_generation/             Download, harmonize, annotate, and package data
-   2-map_2_structure/             Map prepared values and substitutions to PDBs
-   3-PyMOL/                        PyMOL coloring and selection helpers
-data/                            Local raw and processed data (ignored by Git)
-log/                             Local execution logs (ignored by Git)
+  1-data_generation/              Download, harmonize, annotate, and package data
+  2-map_2_structure/              Map prepared values and substitutions to PDBs
+  3-PyMOL/                        PyMOL coloring and selection helpers
+data/                             Local raw and processed data (ignored by Git)
+log/                              Local execution logs (ignored by Git)
 ```
 
 ## Sources and acknowledgements
