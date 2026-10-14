@@ -12,9 +12,9 @@ The Python and shell scripts support users who want to run jobs on their machine
 
 1. **Boltz2.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/1-Boltz2.ipynb) - `Generate an input structure with Boltz-2`
 
-2. **2-MORPH.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb) - `Validate and map variations`
+2. **MORPH.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/2-MORPH.ipynb) - `Validate and map variations`
 
-3. **3-pymol.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb) - `Walk through of PyMOL visualization.`
+3. **pymol.ipynb** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucaschestnuttree/MORPH/blob/main/3-pymol.ipynb) - `Walk through of PyMOL visualization.`
 
 ## What you can explore
 
