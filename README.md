@@ -77,3 +77,13 @@ MORPH builds on the following datasets and tools:
 - **Tamas Hegedus, hegelab.org:** author credited in the supplied AlphaMissense PyMOL coloring helper.
 
 When reporting results, cite the upstream datasets and tools used, and the public MORPH Zenodo record linked above.
+
+## License
+
+Unless otherwise noted, original MORPH materials in this repository are licensed under
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+(CC BY-NC-SA 4.0).
+
+This includes the project documentation, notebooks, and other original materials.
+
+Third-party software, datasets, models, and dependencies retain their own licenses and attribution requirements.
