@@ -62,10 +62,9 @@ README.md                         Project overview and notebook entry point
 docs/advanced-usage.md            Command-line workflows and annotation details
 requirements/                    Development environment definitions and exports
 src/
-1-Boltz2.ipynb                      Optional Boltz-2 structure prediction notebook
+1-Boltz2.ipynb                      Boltz-2 structure prediction notebook
 2-MORPH.ipynb                       Variation mapping notebook
 3-pymol.ipynb                       PyMOL visualization walkthrough
-MORPH_complete.ipynb                Original combined notebook
    1-data_generation/             Download, harmonize, annotate, and package data
    2-map_2_structure/             Map prepared values and substitutions to PDBs
    3-pymol/                        PyMOL coloring and selection helpers
