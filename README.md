@@ -1,3 +1,5 @@
+![MORPH logo](logo/logo_morph.svg)
+
 # MORPH (Missense on Reference Protein Human)
 
 **Human missense variation, mapped onto protein structure.**
